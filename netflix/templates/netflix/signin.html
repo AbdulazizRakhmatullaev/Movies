@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="icon" type="image/x-icon" href="https://cdn.svgporn.com/logos/google-analytics.svg">
+</head>
+
+<body>
+    <a href="{% url 'index' %}" class="back">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left"
+            viewBox="0 0 16 16">
+            <path fill-rule="evenodd"
+                d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+        </svg>
+        <h4>Back</h4>
+    </a>
+    {% if message != null %}
+    <div class="notification">
+        <p>{{message}}</p>
+    </div>
+    {% endif %}
+    <div class="container">
+        <form action="{% url 'signin' %}" method="POST">
+            <div class="log-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" style="height: 180px;" fill="currentColor"
+                    class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
+                    <path fill-rule="evenodd"
+                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
+                </svg>
+            </div>
+            <div class="log-info">
+                <h1>Sign in to your Account</h1>
+                <p>Please enter your username and confirm your password.</p>
+            </div>
+            {% csrf_token %}
+            <div class="field" style="margin-top: 30px;">
+                <input class="login" type="text" name="username" required autocomplete="off" id="username" value="">
+                <label class="l-hover" for="username" title="Username" data-title="Username"></label>
+            </div>
+            <div class="field">
+                <input class="login" type="password" name="password" required autocomplete="off" id="password">
+                <label class="l-hover" for="password" title="Password" data-title="Password"></label>
+            </div>
+            <div class="field">
+                <div class="c-ripple">
+                    <input type="checkbox" checked="checked">
+                    <div class="ripple-caption">Keep me signed in</div>
+                </div>
+            </div>
+            <div class="field">
+                <button class="btn-primary">
+                    Sign in
+                </button>
+            </div>
+        </form>
+        <a href="{% url 'register' %}" style="margin: 0;">
+            <div class="c-ripple">
+                <div class="ripple-caption" style="color: black;">SIGN UP</div>
+            </div>
+        </a>
+    </div>
+</body>
+
+</html>

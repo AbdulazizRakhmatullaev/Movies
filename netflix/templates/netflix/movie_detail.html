@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+{% load embed_video_tags %}
+
+{% block title %}
+{{movie.title}}
+{% endblock %}
+
+{% block content %}
+
+<div class="genre">
+    <h1 class="g-name">Film genres</h1>
+</div>
+<div id="genre-column">
+    <div class="" style="margin-left: 190px;"></div>
+    {% for genre in genres %}
+    <a href=" {% url 'genre_detail_url' genre.slug %}">
+        <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <img src="{{genre.image.url}}" alt="">
+            <div class="bottom-left">{{genre.title}}</div>
+        </div>
+    </a>
+    {% endfor %}
+    <div class="" style="margin-right: 12px;"></div>
+</div>
+
+<div id="flex">
+    <!--  -->
+    <div class="" style="margin-left: 190px;"></div>
+    <!--  -->
+    <div class="film">
+        <div id="flex">
+            <img class="film-poster" src="{{movie.poster.url}}" alt="POSTER">
+            <div class="film-info">
+                <h1>{{movie.title}}</h1>
+                <div class="p">
+                    <p>{{movie.date|date:"Y"}}</p>
+                    <p>‧</p>
+                    {% for movie in movies %}
+                    {% for genre in movie.genre_set.all %}
+                    <p>{{movie.genre.name}}</p>
+                    {% endfor %}
+                    {% endfor %}
+                    <p>‧</p>
+                    <p>{{movie.runtime}}</p>
+                </div>
+            </div>
+            <!-- <div class="filter">
+                <form action="{% url 'sort' %}" method="GET">
+                    <select name="sort" onchange="{this.form.submit()}">
+                        <option  value="-date">Latest</option>
+                        <option  value="date">Old</option>
+                    </select>
+                </form>
+            </div> -->
+        </div>
+    </div>
+    <!--  -->
+    <div class="" style="margin-right: 12px;"></div>
+    <!--  -->
+</div>
+
+<div class="hr"></div>
+<div id="flex">
+    <div class="" style="margin-left: 190px;"></div>
+    <div class="about-film">
+        <div class="main-info">
+            <div id="flex">
+                <span class="cast-text">Cast</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chevron-right right-ar"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+            </div>
+            <div class="cast-column">
+                {% for actor in actors %}
+                <a href="{% url 'actor_detail_url' actor.slug %}">
+                    <div class="actor" style="{% if not forloop.first %} margin-left: 8px; {% endif %}">
+                        <div class="actor-picture">
+                            <img src="{{actor.image.url}}" alt="">
+                        </div>
+                        <div class="actor-name">{{actor.name}}</div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="side-info">
+            <span class="about-text">About</span>
+            <div class="description">
+                <div id="flex" style="justify-content: center;">
+                    <div class="ratings">
+                        <p>{{movie.imdb_rating}}/10</p>
+                        <p class="IMDb">IMDb</p>
+                    </div>
+                    <div class="ratings" style="border: 1px #ecedef; border-style: none solid none solid;">
+                        <p>{{movie.rotten_tomatoes_rating}}%</p>
+                        <p class="R-T">Rotten Tomatoes</p>
+                    </div>
+                    <div class="ratings">
+                        <p>{{movie.other_rating}}/10</p>
+                        <p class="Vudu">Other</p>
+                    </div>
+                </div>
+            </div>
+            <div class="synopsis">{{movie.description}}</div>
+            <div class="more">
+                <div id="flex">
+                    <span class="more-text">Release Date:</span>
+                    <span class="sub-more-text">{{movie.date|date:"F d, Y"}}</span>
+                </div>
+                <div id="flex">
+                    <span class="more-text">Director:</span>
+                    <span class="sub-more-text">
+                        {% for director in directors %}
+                        <a class="link-col" href="{% url 'director_detail_url' director.slug %}">
+                            {{movie.director.name}}
+                        </a>
+                        {% endfor %}
+                    </span>
+                </div>
+                <div id="flex">
+                    <span class="more-text">Budget:</span>
+                    <span class="sub-more-text">{{movie.budget}}</span>
+                </div>
+                <div id="flex">
+                    <span class="more-text">Box Office:</span>
+                    <span class="sub-more-text">{{movie.box_office}}</span>
+                </div>
+                <div id="flex">
+                    <span class="more-text">Music by:</span>
+                    {% for composer in composers %}
+                    <span class="sub-more-text">
+                        <a class="link-col" href="{% url 'composer_detail_url' composer.slug %}">
+                            {{composer}}
+                        </a>
+                    </span>
+                    {% endfor %}
+                </div>
+                <div id="flex">
+                    <span class="more-text">Runtime:</span>
+                    <span class="sub-more-text">{{movie.runtime}}</span>
+                </div>
+                <div id="flex">
+                    <span class="more-text">Country:</span>
+                    <span class="sub-more-text">{{movie.country.name}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="movie-detail">
+    <h1>{{movie.title}}</h1>
+    <div class="movie-flex">
+        <div class="poster-detail">
+            <img class="mov-poster" src="{{movie.poster.url}}" alt="POSTER">
+        </div>
+        <div class="wtf-dont-flex">
+            <div class="mov-detail-info">
+                <h1 class="bold">Ratings:</h1>
+                <p class="nutshell">IMDb: <b>7.0</b>, Kinopoisk: <b>6.5</b></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Tagline:</h1>
+                <p class="nutshell"></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Release Date:</h1>
+                <p class="nutshell">{{movie.date|date:"d F Y"}}</p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Country:</h1>
+                <p class="nutshell">{{movie.country}}</p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Genres:</h1>
+                <p class="nutshell"></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Quality:</h1>
+                <p class="nutshell"></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Age:</h1>
+                <p class="nutshell"></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Runtime:</h1>
+                <p class="nutshell"></p>
+            </div>
+            <div class="mov-detail-info">
+                <h1 class="bold">Cast:</h1>
+                <p class="nutshell"></p>
+            </div>
+        </div>
+    </div>
+</div> -->
+{% endblock %}

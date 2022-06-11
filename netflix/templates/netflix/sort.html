@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="flex">
+    <form action="{% url 'sort' %}" method="GET">
+        <select name="sort" onchange="{this.form.submit()}">
+            <option {% if query=='-date' %} selected {% endif %} value="-date">Latest</option>
+            <option {% if query=='date' %} selected {% endif %} value="date">Old</option>
+        </select>
+    </form>
+</div>
+{% endblock %}

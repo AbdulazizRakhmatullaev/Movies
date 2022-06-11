@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{query}}
+{% endblock %}
+
+{% block content %}
+
+<div class="genre">
+    <h1 class="g-name">Movie You are Looking for</h1>
+</div>
+<div id="movie">
+    <div class="" style="margin-left: 190px;"></div>
+    {% for movie in movies %}
+
+    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+        <a href="{% url 'movie_detail_url' movie.slug %}">
+            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+        </a>
+        <div class="mov-info">
+            <h1>{{movie.title|safe|slice:'0:63'}}</h1>
+        </div>
+    </div>
+    {% empty %}
+
+    <div id="center">
+
+    </div>
+
+    {% endfor %}
+    <div class="" style="margin-right: 12px;"></div>
+</div>
+
+{% endblock %}
