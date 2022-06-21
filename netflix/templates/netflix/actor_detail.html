@@ -1,5 +1,40 @@
 {% extends 'base.html' %}
 
+{% block title %}
+{{actor.name}}
+{% endblock %}
+
 {% block content %}
+
+<div class="person-detail-container">
+    <div id="flex">
+        <img src="{{actor.image.url}}" alt="" class="poster">
+        <div class="person-info">
+            <h1 class="person-detail-name">{{actor.name}}</h1>
+            <p>{{actor.description}}</p>
+            <div class="hr"></div>
+            <div id="flex">
+                <span class="cast-text">Movies</span>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chevron-right right-ar"
+                    viewBox="0 0 16 16">
+                    <path fill-rule="evenodd"
+                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+            </div>
+            <div id="person-in-movies-column">
+                {% for movie in actor.movie_set.all %}
+                <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                    <a href="{% url 'movie_detail_url' movie.slug %}">
+                        <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                    </a>
+                    <div class="mov-info">
+                        <h1>{{movie.title}}</h1>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

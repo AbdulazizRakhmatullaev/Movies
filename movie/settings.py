@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #
     'livereload',
-    'embed_video',
+    'django.contrib.humanize',
     #
 ]
 

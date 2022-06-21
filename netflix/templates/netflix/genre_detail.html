@@ -7,26 +7,25 @@
 {% block content %}
 
 <div class="genre">
-    <h1 class="g-name">Film genres</h1>
+    <h1 class="g-name">Genres</h1>
 </div>
 <div id="genre-column">
-    <div class="" style="margin-left: 190px;"></div>
     {% for genre in genres %}
     <a href=" {% url 'genre_detail_url' genre.slug %}">
         <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
             <img src="{{genre.image.url}}" alt="">
-            <div class="bottom-left">{{genre.title}}</div>
+            <div class="overlay">
+                <div class="bottom-left">{{genre.title}}</div>
+            </div>
         </div>
     </a>
     {% endfor %}
-    <div class="" style="margin-right: 12px;"></div>
 </div>
 
 <div class="genre">
     <h1 class="g-name">{{genre.title}}</h1>
 </div>
 <div id="movie">
-    <div class="" style="margin-left: 190px;"></div>
     {% for movie in genre.movie_set.all %}
     <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
         <a href="{% url 'movie_detail_url' movie.slug %}">

@@ -6,13 +6,28 @@
 
 {% block content %}
 
-<div class="genre">
-    <h1 class="g-name">Movie You are Looking for</h1>
-</div>
-<div id="movie">
-    <div class="" style="margin-left: 190px;"></div>
-    {% for movie in movies %}
 
+<div class="genre">
+    <h1 class="g-name">Find a Movie by genre</h1>
+</div>
+<div id="genre-column">
+    {% for genre in genres %}
+    <a href=" {% url 'genre_detail_url' genre.slug %}">
+        <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <img src="{{genre.image.url}}" alt="">
+            <div class="overlay">
+                <div class="bottom-left">{{genre.title}}</div>
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+<div class="hr"></div>
+
+{% for movie in movies %}
+<h1 class="g-name">Results for search "<b>{{query}}</b>"</h1>
+<div id="movie">
     <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
         <a href="{% url 'movie_detail_url' movie.slug %}">
             <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
@@ -21,14 +36,9 @@
             <h1>{{movie.title|safe|slice:'0:63'}}</h1>
         </div>
     </div>
-    {% empty %}
-
-    <div id="center">
-
-    </div>
-
-    {% endfor %}
-    <div class="" style="margin-right: 12px;"></div>
 </div>
+{% empty %}
+<h1 class="g-name">No results found for "{{query}}"</h1>
+{% endfor %}
 
 {% endblock %}

@@ -11,6 +11,7 @@ from django.shortcuts import reverse
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
+from platformdirs import user_cache_dir
 from requests import request
 
 
@@ -20,6 +21,8 @@ class Profile(models.Model):
     picture = models.ImageField(
         'Profile Picture', blank=True, upload_to='user/pictures/')
     email = models.EmailField('Email', blank=True, unique=True)
+    first_name = models.CharField('First Name', blank=True, max_length=255)
+    last_name = models.CharField('Last Name', blank=True, max_length=255)
 
     class Meta:
         verbose_name = 'Profile'
@@ -73,6 +76,7 @@ class Director(models.Model):
 class Actor(models.Model):
     image = models.ImageField("Image", upload_to='cast/')
     name = models.CharField("Name", max_length=255)
+    description = models.TextField('About an Actor')
     slug = models.SlugField("Link", unique=True)
 
     class Meta:
@@ -159,9 +163,9 @@ class Movie(models.Model):
         Rotten_Tomatoes_Rating, on_delete=models.CASCADE, null=True, verbose_name="Rotten Tomatoes Rating")
     other_rating = models.ForeignKey(
         Other_Rating, on_delete=models.CASCADE, null=True, verbose_name="Other Rating")
-    budget = models.CharField('Budget', max_length=255, default="20 million")
+    budget = models.CharField('Budget', max_length=255, default="20 million", blank=True)
     box_office = models.CharField(
-        'Box Office', max_length=255, default="1.50 billion")
+        'Box Office', max_length=255, default="1.50 billion", blank=True)
     composers = models.ManyToManyField(
         Composer, blank=True, verbose_name="Composers")
     date = models.DateField('Release Date', default=timezone.now)
@@ -187,7 +191,7 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, verbose_name="Author")
     movie = models.ForeignKey(
         Movie, on_delete=models.CASCADE, verbose_name="Movie")
-    comment = models.TextField("Comment")
+    text = models.TextField("Comment", default='What a Movie!')
     date = models.DateTimeField("Date", default=timezone.now)
     publication = models.BooleanField("Publication", default=True)
 
@@ -197,3 +201,15 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.author.username + "|" + self.movie.title
+
+
+class Like(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
+
+
+class Dislike(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField(default=timezone.now)
