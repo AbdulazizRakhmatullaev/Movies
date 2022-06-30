@@ -1,5 +1,6 @@
 {% load static %}
 
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,7 +10,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'style.css' %}">
-    <link rel="icon" type="image/x-icon" href="https://cdn.svgporn.com/logos/framer.svg">
+    <link rel="icon" type="image/x-icon" href="../../media/framer.svg">
+    <link href="http://fonts.cdnfonts.com/css/product-sans" rel="stylesheet">
 </head>
 
 <body>
@@ -19,7 +21,14 @@
             <div id="row">
                 <div class="start">
                     <a href="{% url 'index' %}" id="logo">
-                        <img src="https://cdn.svgporn.com/logos/framer.svg" alt="">
+                        <svg viewBox="0 0 256 384" version="1.1" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid">
+                            <g>
+                                <path
+                                    d="M0,0 L256,0 L256,128 L128,128 L0,0 Z M0,128 L128,128 L256,256 L128,256 L128,384 L0,256 L0,128 Z"
+                                    fill="#000000"></path>
+                            </g>
+                        </svg>
                         <h1>ilms</h1>
                     </a>
                 </div>
@@ -37,21 +46,20 @@
                 </div>
                 <div class="finish">
                     <div class="profile">
-                        {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
 
-                        <a href="{% url 'profile_detail_url' user.username %}">
+                        <a href="{% url 'profile' %}">
                             {% if user.profile.picture.url != null %}
-                            <img class="pp" src="{{user.profile.picture.url}}" alt="">
+                            <img class="pp" src="{{user.profile.picture.url}}" alt="PP">
                             {% else %}
-                            <img class="pp"
-                                src="http://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg"
-                                alt="">
+                            <img class="pp" src="../../media/BlueHead.png" alt="PP">
                             {% endif %}
                         </a>
                         {% else %}
                         <a href="{% url 'signin' %}" class="btn">
                             Sign in
                         </a>
+
                         {% endif %}
                     </div>
                 </div>

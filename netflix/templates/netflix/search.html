@@ -24,10 +24,9 @@
 </div>
 
 <div class="hr"></div>
-
-{% for movie in movies %}
-<h1 class="g-name">Results for search "<b>{{query}}</b>"</h1>
+<div class="g-name">Results for search "<b>{{query}}</b>"</div>
 <div id="movie">
+    {% for movie in movies %}
     <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
         <a href="{% url 'movie_detail_url' movie.slug %}">
             <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
@@ -36,9 +35,9 @@
             <h1>{{movie.title|safe|slice:'0:63'}}</h1>
         </div>
     </div>
+    {% empty %}
+    <span class="g-name">not found</span>
+    {% endfor %}
 </div>
-{% empty %}
-<h1 class="g-name">No results found for "{{query}}"</h1>
-{% endfor %}
 
 {% endblock %}

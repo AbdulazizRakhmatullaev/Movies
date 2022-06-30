@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{user.username}}
+{% endblock %}
+
+{% block content %}
+
+<div class="profile-detail-container">
+    <div class="main-profile-info">
+        <div class="p20">
+            <div class="hr"></div>
+
+            <div id="profile-flex">
+                {% if user.profile.picture.url != null %}
+                <img class="pp-detail" src="{{user.profile.picture.url}}" alt="">
+                {% else %}
+                <img class="pp-detail" src="../../media/BlueHead.png" alt="">
+                {% endif %}
+                <div class="profile-detail-info">
+                    <p class="profile-username">{{user.username}}</p>
+                    <p class="profile-email">
+                        {{user.email}}
+                    </p>
+                    <div id="flex">
+                        <p class="profile-lastname">{{user.last_name}}</p>
+                        <p class="profile-firstname">{{user.first_name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="signout">
+                <form action="{% url 'signout' %}">
+                    <button class="logout" name="logout" onclick="return confirm_logout()">
+                        Log Out
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="side-info" style="border-left: 1px solid #dadce0;">
+        <div class="cool-text">Movies liked</div>
+        <div id="person-in-movies-column">
+            {% for like in user.like_set.all %}
+            <div class="more-mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                {% if like.movie.slug != null %}
+                <a href="{% url 'movie_detail_url' like.movie.slug %}">
+                    <img class="more-poster" src="{{like.movie.poster.url}}" alt="poster">
+                </a>
+                {% else %}
+
+                {% endif %}
+                <div class="more-mov-info">
+                    <h1>{{like.movie.title}}</h1>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="hr"></div>
+        <div class="cool-text">Watched</div>
+        <div id="person-in-movies-column">
+            {% for view in user.view_set.all %}
+            <div class="more-mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                <a href="{% url 'movie_detail_url' view.movie.slug %}">
+                    <img class="more-poster" src="{{view.movie.poster.url}}" alt="poster">
+                </a>
+                <div class="more-mov-info">
+                    <h1>{{view.movie.title}}</h1>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="hr"></div>
+        <div class="cool-text">Reviews</div>
+        <div class="user-review-column">
+            {% for comment in comments %}
+            <div class="comment-item">
+                <div class="user-com-pic" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                    {% if user.profile.picture.url != null %}
+                    <img class="user-avatar" src="{{user.profile.picture.url}}" alt="">
+                    {% else %}
+                    <img class="user-avatar" src="../../media/BlueHead.png" alt="">
+                    {% endif %}
+                </div>
+                <a href="{% url 'movie_detail_url' comment.movie.slug %}">
+                    <div class="user-com">
+                        <div id="star"></div>
+                        <div id="star"></div>
+                        <div id="star"></div>
+                        <div id="star"></div>
+                        <div id="star"></div>
+                        <div class="user-com-text">{{comment.text}}</div>
+                    </div>
+                </a>
+                {% if not forloop.last %}
+                <div class="vhr"></div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,5 @@
 from django.contrib import admin
-
-from netflix.views import like
-from .models import Like, Profile, Genre, Director, Actor, Composer, Movie, IMDb_Rating, Other_Rating, Rotten_Tomatoes_Rating, Comment
+from .models import Poll, Profile, Genre, Director, Actor, Composer, Movie, IMDb_Rating, Other_Rating, Role, Rotten_Tomatoes_Rating, Comment
 
 
 class TitleSlug(admin.ModelAdmin):
@@ -10,11 +8,6 @@ class TitleSlug(admin.ModelAdmin):
 
 class NameSlug(admin.ModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
-
-
-class CommentConfig(admin.ModelAdmin):
-    # prepopulated_fields = {'slug': ('text',)}
-    list_display = ['text', 'date']
 
 
 class Profile_list(admin.ModelAdmin):
@@ -30,4 +23,6 @@ admin.site.register(Composer, NameSlug)
 admin.site.register(Other_Rating)
 admin.site.register(Rotten_Tomatoes_Rating)
 admin.site.register(IMDb_Rating)
-admin.site.register(Comment, CommentConfig)
+admin.site.register(Comment)
+admin.site.register(Poll)
+admin.site.register(Role)

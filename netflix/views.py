@@ -5,38 +5,68 @@ from xml.etree.ElementTree import Comment
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from .models import Actor, Composer, Director, Profile, Genre, Comment, Movie
+from pytz import timezone
+from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role
 from django.db.models import Q, Max, Count
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.utils import timezone
 
 
 def index(request):
     movies = Movie.objects.order_by('-date')
     genres = Genre.objects.order_by('title')
     context = {
-        'genres': genres, 'movies': movies
+        'genres': genres,
+        'movies': movies,
     }
     return render(request, 'netflix/index.html', context)
 
 
-def profile_detail(request, username):
+def profile(request):
     if not request.user.is_authenticated:
         return redirect('index')
+    comments = request.user.comment_set.order_by('-date')
+    likes = request.user.like_set.order_by('-date')
+    views = request.user.view_set.order_by('-date')
+    context = {
+        'comments': comments,
+        'likes': likes,
+        'views': views
+    }
+    return render(request, "netflix/profile.html", context)
+
+
+def user_detail(request, username):
     user = User.objects.get(username__exact=username)
-    return render(request, "netflix/profile_detail.html", {"user": user})
+    likes = user.like_set.order_by('-date')
+    comments = user.comment_set.order_by('-date')
+    views = user.view_set.order_by('-date')
+    context = {
+        'user': user,
+        'likes': likes,
+        'comments': comments,
+        'views': views
+    }
+    return render(request, "netflix/user_detail.html", context)
 
 
 def movie_detail(request, slug):
     movie = Movie.objects.get(slug__exact=slug)
-    genres = Genre.objects.order_by('title')
+    if request.user.is_authenticated:
+        if not movie.view_set.filter(user=request.user).exists():
+            movie.view_set.create(user=request.user)
+        else:
+            view = request.user.view_set.get(movie=movie)
+            view.date = timezone.now()
+            view.save()
+    genres = Genre.objects.all()
     context = {
         "movie": movie,
         "genres": genres
     }
     return render(request, 'netflix/movie_detail.html', context)
-
 
 def genre_detail(request, slug):
     genre = Genre.objects.get(slug__exact=slug)
@@ -47,18 +77,27 @@ def genre_detail(request, slug):
 
 def actor_detail(request, slug):
     actor = Actor.objects.get(slug__exact=slug)
-    movies = Movie.objects.order_by('title')
-    return render(request, 'netflix/actor_detail.html', {"actor": actor, 'movies': movies})
+    cast = Actor.objects.order_by('-name').exclude(id=actor.id)
+    movies = Movie.objects.order_by('-date')
+    return render(request, 'netflix/actor_detail.html', {"actor": actor, 'cast': cast, 'movies': movies})
 
 
 def director_detail(request, slug):
     director = Director.objects.get(slug__exact=slug)
-    return render(request, 'netflix/director_detail.html', {"director": director})
+    directors = Director.objects.order_by('-name').exclude(id=director.id)
+    movies = Movie.objects.order_by('-date')
+    return render(request, 'netflix/director_detail.html', {"director": director, 'movies': movies, 'directors': directors})
 
 
 def composer_detail(request, slug):
     composer = Composer.objects.get(slug__exact=slug)
-    return render(request, 'netflix/composer_detail.html', {"composer": composer})
+    composers = Composer.objects.order_by('-name').exclude(id=composer.id)
+    movies = Movie.objects.order_by('-date')
+    return render(request, 'netflix/composer_detail.html', {
+        "composer": composer,
+        'movies': movies,
+        'composers': composers
+    })
 
 
 def search(request):
@@ -83,7 +122,6 @@ def comment(request, slug):
     return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
-@csrf_exempt
 def like(request, slug):
     movie = Movie.objects.get(slug__exact=slug)
     if request.method == 'POST':
@@ -96,10 +134,11 @@ def like(request, slug):
             else:
                 like = request.user.like_set.get(movie=movie)
                 like.delete()
-    return HttpResponse('HI')
+        else:
+            return redirect('signin')
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
-@csrf_exempt
 def dislike(request, slug):
     movie = Movie.objects.get(slug__exact=slug)
     if request.method == 'POST':
@@ -112,7 +151,118 @@ def dislike(request, slug):
             else:
                 dislike = request.user.dislike_set.get(movie=movie)
                 dislike.delete()
-    return HttpResponse('HI')
+        else:
+            return redirect('signin')
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
+
+
+# ------------------------------
+
+
+def firstChoice(request, slug):
+    actor = Actor.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not actor.firstchoice_set.filter(user=request.user).exists():
+                actor.firstchoice_set.create(user=request.user)
+                if actor.secondchoice_set.filter(user=request.user).exists():
+                    secondchoice = request.user.secondchoice_set.get(
+                        actor=actor)
+                    secondchoice.delete()
+            else:
+                firstchoice = request.user.firstchoice_set.get(actor=actor)
+                firstchoice.delete()
+    return redirect(reverse('actor_detail_url', kwargs={'slug': slug}))
+
+
+def secondChoice(request, slug):
+    actor = Actor.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not actor.secondchoice_set.filter(user=request.user).exists():
+                actor.secondchoice_set.create(user=request.user)
+                if actor.firstchoice_set.filter(user=request.user).exists():
+                    firstchoice = request.user.firstchoice_set.get(
+                        actor=actor)
+                    firstchoice.delete()
+            else:
+                secondchoice = request.user.secondchoice_set.get(actor=actor)
+                secondchoice.delete()
+    return redirect(reverse('actor_detail_url', kwargs={'slug': slug}))
+
+
+# ------------------------------
+
+
+def DirectorFirstChoice(request, slug):
+    director = Director.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not director.firstchoice_set.filter(user=request.user).exists():
+                director.firstchoice_set.create(user=request.user)
+                if director.secondchoice_set.filter(user=request.user).exists():
+                    secondchoice = request.user.secondchoice_set.get(
+                        director=director)
+                    secondchoice.delete()
+            else:
+                firstchoice = request.user.firstchoice_set.get(
+                    director=director)
+                firstchoice.delete()
+    return redirect(reverse('director_detail_url', kwargs={'slug': slug}))
+
+
+def DirectorSecondChoice(request, slug):
+    director = Director.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not director.secondchoice_set.filter(user=request.user).exists():
+                director.secondchoice_set.create(user=request.user)
+                if director.firstchoice_set.filter(user=request.user).exists():
+                    firstchoice = request.user.firstchoice_set.get(
+                        director=director)
+                    firstchoice.delete()
+            else:
+                secondchoice = request.user.secondchoice_set.get(
+                    director=director)
+                secondchoice.delete()
+    return redirect(reverse('director_detail_url', kwargs={'slug': slug}))
+
+
+# ------------------------------
+
+
+def ComposerFirstChoice(request, slug):
+    composer = Composer.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not composer.firstchoice_set.filter(user=request.user).exists():
+                composer.firstchoice_set.create(user=request.user)
+                if composer.secondchoice_set.filter(user=request.user).exists():
+                    secondchoice = request.user.secondchoice_set.get(
+                        composer=composer)
+                    secondchoice.delete()
+            else:
+                firstchoice = request.user.firstchoice_set.get(
+                    composer=composer)
+                firstchoice.delete()
+    return redirect(reverse('composer_detail_url', kwargs={'slug': slug}))
+
+
+def ComposerSecondChoice(request, slug):
+    composer = Composer.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not composer.secondchoice_set.filter(user=request.user).exists():
+                composer.secondchoice_set.create(user=request.user)
+                if composer.firstchoice_set.filter(user=request.user).exists():
+                    firstchoice = request.user.firstchoice_set.get(
+                        composer=composer)
+                    firstchoice.delete()
+            else:
+                secondchoice = request.user.secondchoice_set.get(
+                    composer=composer)
+                secondchoice.delete()
+    return redirect(reverse('composer_detail_url', kwargs={'slug': slug}))
 
 
 def signup(request):

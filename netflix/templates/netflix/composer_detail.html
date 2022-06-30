@@ -5,29 +5,110 @@
 {% endblock %}
 
 {% block content %}
-
 <div class="person-detail-container">
     <div id="flex">
-        <img src="{{composer.image.url}}" style="overflow: hidden;" alt="" class="poster">
-        <div class="person-info">
-            <h1 class="person-detail-name">{{composer.name}}</h1>
-            <p>{{composer.description}}</p>
+        <div class="main-info">
+            <div class="pr">
+                <div id="flex">
+                    <img src="{{composer.image.url}}" alt="" class="person-photo">
+                    <div class="person-info">
+                        <h1 class="person-detail-name">{{composer.name}}</h1>
+                        <p class="person-type">{{composer.type}}</p>
+                        <p class="person-desc">{{composer.description}}</p>
+                    </div>
+                </div>
+                <div class="hr"></div>
+                <div id="flex">
+                    <span class="cast-text">Movies</span>
+                </div>
+                <div id="person-in-movies-column">
+                    {% for movie in composer.movie_set.all %}
+                    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 10px; {% endif %}">
+                        <a href="{% url 'movie_detail_url' movie.slug %}">
+                            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                        </a>
+                        <div class="mov-info">
+                            <h1>{{movie.title}}</h1>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="side-info" style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden;">
+            <div class="poll">
+                {% for poll in composer.poll_set.all %}
+                <div class="question">
+                    <div class="va">
+                        <p class="quest">
+                            {{poll.question}}
+                        </p>
+                    </div>
+                </div>
+                <div class="vote">
+                    <form method="POST" id="flex" style="width: 100%;" action="{% url 'ComposerFirstChoice' composer.slug %}">
+                        {% csrf_token %}
+                        <!-- <input class="vote-radio" type="radio" id="firstchoice">  -->
+                        <button class="vote-btn" id="button" onclick="firstchoice_check()">
+                            <div class="vote-text">
+                                {{poll.firstchoice_title}}
+                            </div>
+                            <div class="vote-text">
+                                {{composer.firstchoice_set.count}}
+                            </div>
+                        </button>
+                    </form>
+                </div>
+                <div class="vote">
+                    <form method="POST" id="flex" style="width: 100%;" action="{% url 'ComposerSecondChoice' composer.slug %}">
+                        {% csrf_token %}
+                        <!-- <input class="vote-radio" type="radio" id="secondchoice">  -->
+                        <button class="vote-btn" id="button" onclick="secondchoice_check()">
+                            <div class="vote-text">
+                                {{poll.secondchoice_title}}
+                            </div>
+                            <div class="vote-text">
+                                {{composer.secondchoice_set.count}}
+                            </div>
+                        </button>
+                    </form>
+                </div>
+                <span class="results">{{composer.firstchoice_set.count}}-{{composer.secondchoice_set.count}}
+                    votes</span>
+                {% endfor %}
+            </div>
+            <div class="hr"></div>
+            <div class="more-interest">
+                <div id="flex">
+                    <span class="cast-text" style="font-size: 18px;">More Composers</span>
+                </div>
+                <div class="more-cast-column">
+                    {% for composer in composers %}
+                    <a href="{% url 'composer_detail_url' composer.slug %}">
+                        <div class="more-actor" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                            <div class="more-actor-picture">
+                                <img src="{{composer.image.url}}" alt="{{composer.name}}">
+                            </div>
+                            <div class="more-actor-n_r">
+                                <div class="more-actor-name">{{composer.name}}</div>
+                                <div class="more-actor-role">{{role.role}}</div>
+                            </div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
             <div class="hr"></div>
             <div id="flex">
-                <span class="cast-text">Movies</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chevron-right right-ar"
-                    viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-                </svg>
+                <span class="cast-text" style="font-size: 18px;">More Movies</span>
             </div>
-            <div id="person-in-movies-column">
-                {% for movie in composer.movie_set.all %}
-                <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <div class="more-movies">
+                {% for movie in movies %}
+                <div class="more-mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
                     <a href="{% url 'movie_detail_url' movie.slug %}">
-                        <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                        <img class="more-poster" src="{{movie.poster.url}}" alt="POSTER">
                     </a>
-                    <div class="mov-info">
+                    <div class="more-mov-info">
                         <h1>{{movie.title}}</h1>
                     </div>
                 </div>
@@ -36,5 +117,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}

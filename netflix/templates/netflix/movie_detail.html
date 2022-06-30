@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load humanize %}
 
+
 {% block title %}
 {{movie.title}}
 {% endblock %}
@@ -52,11 +53,6 @@
         <div class="pr">
             <div id="flex">
                 <span class="cast-text">Cast</span>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chevron-right right-ar"
-                    viewBox="0 0 16 16">
-                    <path fill-rule="evenodd"
-                        d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-                </svg>
             </div>
             <div class="cast-column">
                 {% for actor in movie.cast.all %}
@@ -65,7 +61,10 @@
                         <div class="actor-picture">
                             <img src="{{actor.image.url}}" alt="{{actor.name}}">
                         </div>
-                        <div class="actor-name">{{actor.name}}</div>
+                        <div class="actor-n_r">
+                            <div class="actor-name">{{actor.name}}</div>
+                            <div class="actor-role">{{role.role}}</div>
+                        </div>
                     </div>
                 </a>
                 {% endfor %}
@@ -78,22 +77,15 @@
             <div class="comments">
                 <div id="flex">
                     <span class="cast-text">{{movie.comment_set.count}} Comments</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-chevron-right right-ar"
-                        viewBox="0 0 16 16">
-                        <path fill-rule="evenodd"
-                            d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z" />
-                    </svg>
                 </div>
 
                 {% if user.is_authenticated %}
                 <div class="user-input">
-                    <a href="{% url 'profile_detail_url' user.username %}">
+                    <a href="{% url 'profile' %}">
                         {% if user.profile.picture.url != null %}
                         <img class="cp" src="{{user.profile.picture.url}}" alt="">
                         {% else %}
-                        <img class="cp"
-                            src="http://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg"
-                            alt="">
+                        <img class="cp" src="../../media/BlueHead.png" alt="">
                         {% endif %}
                     </a>
                     <div style="width: 92%;">
@@ -105,9 +97,7 @@
                 </div>
                 {% else %}
                 <div class="user-input">
-                    <img class="comment_user_avatar"
-                        src="http://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg"
-                        alt="">
+                    <img class="comment_user_avatar" src="../../media/BlueHead.png" alt="">
                     <a href="{% url 'signin' %}" style="width: 92%;">
                         <input class="loggedout-comment_input" type="text" name="text" placeholder="Add a comment...">
                     </a>
@@ -116,22 +106,33 @@
                 {% for comment in movie.comment_set.all %}
                 <div class="review-column">
                     <div class="c-section-first">
-                        <a href="{% url 'profile_detail_url' comment.author.username %}">
+                        {% if comment.author.id == user.id %}
+                        <a href="{% url 'profile' %}">
+                            {% if user.profile.picture.url != null %}
+                            <img class="comment_user_avatar" src="{{user.profile.picture.url}}" alt="">
+                            {% else %}
+                            <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                                alt="{{comment.author.username}}">
+                            {% endif %}
+                        </a>
+                        {% else %}
+                        <a href="{% url 'user_detail_url' comment.author.profile %}">
                             {% if comment.author.profile.picture.url != null %}
                             <img class="comment_user_avatar" src="{{comment.author.profile.picture.url}}" alt="">
                             {% else %}
-                            <img class="comment_user_avatar"
-                                src="http://3.bp.blogspot.com/-qDc5kIFIhb8/UoJEpGN9DmI/AAAAAAABl1s/BfP6FcBY1R8/s320/BlueHead.jpg"
-                                alt="">
+                            <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                                alt="{{comment.author.username}}">
                             {% endif %}
                         </a>
+                        {% endif %}
+
                     </div>
                     <div class="c-section-second">
-                        <div id="flex" style="margin-bottom: 2px;">
+                        <div id="flex">
                             <span class="comment-username">{{comment.author.username}}</span>
                             <span class="comment-date">{{comment.date|naturaltime}}</span>
                         </div>
-                        <span class="comment_text">{{comment.text}}</span>
+                        <div class="comment_text">{{comment.text}}</div>
                         <!-- LIKES/DISLIKES -->
                         <!-- <div id="flex">
                             <div id="flex">
@@ -151,6 +152,19 @@
                         <!--  -->
                     </div>
                 </div>
+                {% endfor %}
+            </div>
+            <div class="hr"></div>
+            <div id="flex">
+                <span class="cast-text">Subgenres</span>
+            </div>
+            <div id="sub-genre-column">
+                {% for genre in genres %}
+                <a href=" {% url 'genre_detail_url' genre.slug %}">
+                    <div class="sub-genre-item" style=" margin-bottom: 10px;">
+                        <div class="sub-genre">{{genre.title}}</div>
+                    </div>
+                </a>
                 {% endfor %}
             </div>
             <div class="hr"></div>
@@ -174,18 +188,24 @@
                 </div>
             </div>
         </div>
-        <div class="synopsis">{{movie.description}}</div>
+        <div class="synopsis">{{movie.description|safe}}</div>
         <div class="more">
             <div id="more-flex">
                 <span class="more-text">Release Date:</span>
                 <span class="sub-more-text">{{movie.date|date:"F d, Y"}}</span>
             </div>
             <div id="more-flex">
+                {% if movie.director >= 2 %}
                 <span class="more-text">Director:</span>
+                {% else %}
+                <span class="more-text">Directors:</span>
+                {% endif %}
                 <span class="sub-more-text">
-                    <a class="link-col" href="{% url 'director_detail_url' movie.director.slug %}">
-                        {{movie.director.name}}
+                    {% for director in movie.director.all %}
+                    <a class="link-col" href="{% url 'director_detail_url' director.slug %}">
+                        {{director.name}}{%if not forloop.last%},{%endif%}
                     </a>
+                    {% endfor %}
                 </span>
             </div>
             {% if movie.budget != null %}
@@ -219,65 +239,43 @@
                 <span class="sub-more-text">{{movie.country.name}}</span>
             </div>
         </div>
+        <div class="likes">
+            <div>
+                <span class="like-text">
+                    {{movie.like_set.count}} users liked this Movie
+                </span>
+                <p class="film-text">
+                    Films Website Users
+                </p>
+            </div>
+            <div id="flex">
+                <div id="flex">
+                    <form method="POST" action="{% url 'like' movie.slug %}">
+                        {% csrf_token %}
+                        <button name="like" class="like-btn">
+                            <svg class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                <path
+                                    d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                </path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                {% csrf_token %}
+                <div id="flex">
+                    <form method="POST" action="{% url 'dislike' movie.slug %}">
+                        {% csrf_token %}
+                        <button class="dislike-btn" name="dislike">
+                            <svg class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                <path
+                                    d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                </path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-</div>
-
-<script>
-    $(function () {
-        $('#like').on('click', function () {
-            var url = $(this).attr('data-url')
-            var token = $('[name=csrfmiddlewaretoken]').val()
-
-            $.ajax({
-                url: url,
-
-                type: "POST",
-
-                headers: {
-                    'X_CSRF-Token': token
-                },
-
-                success: function (data) {
-                    console.log('NOICE = NICE')
-                    $('#like').css('color', 'green')
-                    $('#likes').load(location.href + ' #likes_count')
-                    $('#dislikes').load(location.href + ' #dislikes_count')
-                },
-                error: function (msg) {
-                    alert('WTF DUDE')
-                    console.log(msg)
-                }
-            })
-        })
-    })
-
-    $(function () {
-        $('#dislike').on('click', function () {
-            var url = $(this).attr('data-url')
-            var token = $('[name=csrfmiddlewaretoken]').val()
-
-            $.ajax({
-                url: url,
-
-                type: "POST",
-
-                headers: {
-                    'X_CSRF-Token': token
-                },
-
-                success: function (data) {
-                    console.log('NOICE = NICE')
-                    $('#dilike').css('color', 'red')
-                    $('#dislikes').load(location.href + ' #dislikes_count')
-                    $('#likes').load(location.href + ' #likes_count')
-                },
-                error: function (msg) {
-                    alert('WTF DUDE')
-                    console.log(msg)
-                }
-            })
-        })
-    })
-</script>
 {% endblock %}
