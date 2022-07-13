@@ -35,7 +35,8 @@
                 </div>
             </div>
         </div>
-        <div class="side-info" style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden;">
+        <div class="side-info"
+            style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden; padding-bottom: 20px;">
             <div class="poll">
                 {% for poll in actor.poll_set.all %}
                 <div class="question">
@@ -48,8 +49,9 @@
                 <div class="vote">
                     <form method="POST" id="flex" style="width: 100%;" action="{% url 'firstChoice' actor.slug %}">
                         {% csrf_token %}
-                        <!-- <input class="vote-radio" type="radio" id="firstchoice">  -->
-                        <button class="vote-btn" id="button" onclick="firstchoice_check()">
+                        {% if firstchoice_set.user.exists %}
+                        <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
+                        <button class="vote-btn" style="background: #ebebeb;">
                             <div class="vote-text">
                                 {{poll.firstchoice_title}}
                             </div>
@@ -57,13 +59,30 @@
                                 {{actor.firstchoice_set.count}}
                             </div>
                         </button>
+                        {% else %}
+                        <input class="vote-radio" type="radio" id="firstchoice">
+                        <button class="vote-btn">
+                            <div class="vote-text">
+                                {{poll.firstchoice_title}}
+                            </div>
+                            <div class="vote-text">
+                                {{actor.firstchoice_set.count}}
+                            </div>
+                        </button>
+                        {% endif %}
                     </form>
                 </div>
                 <div class="vote">
                     <form method="POST" id="flex" style="width: 100%;" action="{% url 'secondChoice' actor.slug %}">
                         {% csrf_token %}
-                        <!-- <input class="vote-radio" type="radio" id="secondchoice">  -->
-                        <button class="vote-btn" id="button" onclick="secondchoice_check()">
+                        {% if actor.secondchoice_set.user.exists %}
+                        <input class="vote-radio" type="radio" id="secondchoice" checked="checked">
+                        {% else %}
+                        <input class="vote-radio" type="radio" id="secondchoice">
+                        {% endif %}
+                        <button class="vote-btn"
+                            style="{% if request.user.actorsecondchoice_set.exists %} background: #ebebeb; {% endif %}"
+                            id="button" onclick="secondchoice_check()">
                             <div class="vote-text">
                                 {{poll.secondchoice_title}}
                             </div>
@@ -73,7 +92,7 @@
                         </button>
                     </form>
                 </div>
-                <span class="results">{{actor.firstchoice_set.count}}-{{actor.secondchoice_set.count}} votes</span>
+                <span class="results">{{actor.firstchoice_set.count}}/{{actor.secondchoice_set.count}} votes</span>
                 {% endfor %}
             </div>
             <div class="hr"></div>
@@ -97,32 +116,7 @@
                     {% endfor %}
                 </div>
             </div>
-            <div class="hr"></div>
-            <div id="flex">
-                <span class="cast-text" style="font-size: 18px;">More Movies</span>
-            </div>
-            <div class="more-movies">
-                {% for movie in movies %}
-                <div class="more-mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
-                    <a href="{% url 'movie_detail_url' movie.slug %}">
-                        <img class="more-poster" src="{{movie.poster.url}}" alt="POSTER">
-                    </a>
-                    <div class="more-mov-info">
-                        <h1>{{movie.title}}</h1>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
         </div>
     </div>
 </div>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>
-    $("#button").click(function () {
-        $("#button").addClass('button-clicked');
-    });
-</script>
-
 {% endblock %}

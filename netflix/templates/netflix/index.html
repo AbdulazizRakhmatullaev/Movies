@@ -22,6 +22,7 @@ Home
     {% endfor %}
 </div>
 
+
 <div class="genre">
     <h1 class="g-name">New Movies</h1>
 </div>
@@ -30,13 +31,27 @@ Home
     {% for movie in movies %}
     <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
         <a href="{% url 'movie_detail_url' movie.slug %}">
-            {% if movie.user.view_set != null %}
-            <div class="watched">watched</div>
-            {% endif %}
             <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
         </a>
         <div class="mov-info">
             <h1>{{movie.title}}</h1>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="genre">
+    <h1 class="g-name">Popular Movies</h1>
+</div>
+
+<div id="movie">
+    {% for popular in populars %}
+    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+        <a href="{% url 'movie_detail_url' popular.slug %}">
+            <img class="poster" src="{{popular.poster.url}}" alt="POSTER">
+        </a>
+        <div class="mov-info">
+            <h1>{{popular.title}}</h1>
         </div>
     </div>
     {% endfor %}

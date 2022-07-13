@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Liked
+{% endblock %}
+
+{% block content %}
+<div class="profile-detail-container">
+    <div class="main-profile-info">
+        <div class="pr20">
+            <div id="profile-flex">
+                {% if user.profile.picture.url != null %}
+                <img class="pp-detail" src="{{user.profile.picture.url}}" alt="">
+                {% else %}
+                <img class="pp-detail" src="../../media/BlueHead.png" alt="">
+                {% endif %}
+                <div class="profile-detail-info">
+                    <p class="profile-username">{{user.username}}</p>
+                    <p class="profile-email">
+                        {{user.email}}
+                    </p>
+                    <div id="flex">
+                        <p class="profile-firstname">{{user.first_name}}</p>
+                        <p class="profile-lastname">{{user.last_name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-navigation">
+                <a href="{% url 'user_detail_url' user.username %}">
+                    <button class="pr-btn">
+                        <div class="com-icon" style="background: linear-gradient(#d6e6ed, #767675);">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="height: 15px; margin: 5px;"
+                                class="bi bi-people-fill" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                            </svg>
+                        </div>
+                        <div class="ml-10">Home</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_comments' user.username %}">
+                    <button class="pr-btn">
+                        <img class="com-icon" src="../../../media/com_icon.webp" alt="">
+                        <div class="ml-10">Comments</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_liked' user.username %}">
+                    <button class="pr-btn dadce0">
+                        <img class="com-icon" src="../../../media/liked.png" alt="">
+                        <div class="ml-10">Liked</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_watched' user.username %}">
+                    <button class="pr-btn">
+                        <img class="com-icon" src="../../../media/watched 2.jpeg" alt="">
+                        <div class="ml-10">Watched</div>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="side-profile-info" style="border-left: 1px solid #dadce0;">
+        <div class="pl20">
+            <span class="cool-text">Genres</span>
+            <div id="sub-flex" style="position: relative; margin: 15px 0;">
+                <!-- <div class="left-smooth-fade"></div> -->
+                <div id="sub-genre-column">
+                    {% for genre in genres %}
+                    <a href="{% url 'genre_detail_url' genre.slug %}"
+                        style="{% if not forloop.first %} margin-left: 6px; {% endif %} {% if forloop.last %} margin-right: 20px; {% endif %}">
+                        <div class="sub-genre-item"
+                            style="{% if request.path == genre.current_path %} background: #eaf0fd; color: #1558d6; border-color: #d5e2fa; {% endif %}">
+                            <div class="sub-genre">{{genre.title}}</div>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+                <div class="right-smooth-fade"></div>
+            </div>
+            <div class="hr"></div>
+            <div class="cool-text">Liked</div>
+            <div id="person-in-movies-column">
+                {% for like in user.like_set.all %}
+                <div class="more-mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                    {% if like.movie.slug != null %}
+                    <a href="{% url 'movie_detail_url' like.movie.slug %}">
+                        <img class="more-poster" src="{{like.movie.poster.url}}" alt="poster">
+                    </a>
+                    {% else %}
+
+                    {% endif %}
+                    <div class="more-mov-info">
+                        <h1>{{like.movie.title}}</h1>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

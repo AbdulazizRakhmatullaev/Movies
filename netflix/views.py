@@ -1,25 +1,35 @@
 from cgitb import text
 import email
+from email.policy import default
+from random import random
+from signal import setitimer
+from socket import timeout
 from unicodedata import category, name
 from xml.etree.ElementTree import Comment
+from django import views
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from pytz import timezone
-from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role
+from requests import request
+from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role, UserVisit, View
 from django.db.models import Q, Max, Count
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from random import shuffle
 from django.utils import timezone
+from .forms import ProfileForm
 
 
 def index(request):
-    movies = Movie.objects.order_by('-date')
+    movies = Movie.objects.all().order_by('-date')
+    populars = Movie.objects.order_by('-title')
     genres = Genre.objects.order_by('title')
     context = {
         'genres': genres,
         'movies': movies,
+        'populars': populars
     }
     return render(request, 'netflix/index.html', context)
 
@@ -27,15 +37,18 @@ def index(request):
 def profile(request):
     if not request.user.is_authenticated:
         return redirect('index')
-    comments = request.user.comment_set.order_by('-date')
-    likes = request.user.like_set.order_by('-date')
-    views = request.user.view_set.order_by('-date')
-    context = {
-        'comments': comments,
-        'likes': likes,
-        'views': views
-    }
-    return render(request, "netflix/profile.html", context)
+    form = ProfileForm()
+    uservisits = UserVisit.objects.all()
+    return render(request, "netflix/profile.html", {'form': form, 'uservisits': uservisits})
+
+
+def profile_comment_delete(request, slug, pk):
+    movie = Movie.objects.get(slug__exact=slug)
+    comment = movie.comment_set.get(pk=pk)
+    if request.method == 'POST':
+        comment.delete()
+        return redirect('comments')
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
 def user_detail(request, username):
@@ -61,65 +74,12 @@ def movie_detail(request, slug):
             view = request.user.view_set.get(movie=movie)
             view.date = timezone.now()
             view.save()
-    genres = Genre.objects.all()
+    genres = Genre.objects.order_by('title')
     context = {
         "movie": movie,
-        "genres": genres
+        "genres": genres,
     }
     return render(request, 'netflix/movie_detail.html', context)
-
-def genre_detail(request, slug):
-    genre = Genre.objects.get(slug__exact=slug)
-    movies = Movie.objects.all()
-    genres = Genre.objects.order_by('title')
-    return render(request, 'netflix/genre_detail.html', {"genre": genre, "genres": genres, "movies": movies})
-
-
-def actor_detail(request, slug):
-    actor = Actor.objects.get(slug__exact=slug)
-    cast = Actor.objects.order_by('-name').exclude(id=actor.id)
-    movies = Movie.objects.order_by('-date')
-    return render(request, 'netflix/actor_detail.html', {"actor": actor, 'cast': cast, 'movies': movies})
-
-
-def director_detail(request, slug):
-    director = Director.objects.get(slug__exact=slug)
-    directors = Director.objects.order_by('-name').exclude(id=director.id)
-    movies = Movie.objects.order_by('-date')
-    return render(request, 'netflix/director_detail.html', {"director": director, 'movies': movies, 'directors': directors})
-
-
-def composer_detail(request, slug):
-    composer = Composer.objects.get(slug__exact=slug)
-    composers = Composer.objects.order_by('-name').exclude(id=composer.id)
-    movies = Movie.objects.order_by('-date')
-    return render(request, 'netflix/composer_detail.html', {
-        "composer": composer,
-        'movies': movies,
-        'composers': composers
-    })
-
-
-def search(request):
-    query = request.GET.get("search")
-    movies = (
-        Movie.objects.filter(Q(title__icontains=query))
-    )
-    genres = Genre.objects.order_by('title')
-    return render(request, "netflix/search.html", {"query": query, "movies": movies, 'genres': genres})
-
-
-def comment(request, slug):
-    movie = Movie.objects.get(slug__exact=slug)
-    if request.method == 'POST':
-        comment = movie.comment_set.create(
-            author=request.user,
-            text=request.POST.get('text')
-        )
-        if request.user.is_superuser:
-            comment.publish = True
-            comment.save()
-    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
 def like(request, slug):
@@ -156,6 +116,105 @@ def dislike(request, slug):
     return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
+def genre_detail(request, slug):
+    genre = Genre.objects.get(slug__exact=slug)
+    movies = Movie.objects.all()
+    genres = Genre.objects.all().order_by('title')
+    return render(request, 'netflix/genre_detail.html', {"genre": genre, "genres": genres, "movies": movies})
+
+
+def actor_detail(request, slug):
+    actor = Actor.objects.get(slug__exact=slug)
+    cast = Actor.objects.order_by('-name').exclude(id=actor.id)
+    return render(request, 'netflix/actor_detail.html', {"actor": actor, 'cast': cast})
+
+
+def director_detail(request, slug):
+    director = Director.objects.get(slug__exact=slug)
+    directors = Director.objects.order_by('-name').exclude(id=director.id)
+    return render(request, 'netflix/director_detail.html', {"director": director, 'directors': directors})
+
+
+def composer_detail(request, slug):
+    composer = Composer.objects.get(slug__exact=slug)
+    composers = Composer.objects.order_by('-name').exclude(id=composer.id)
+    return render(request, 'netflix/composer_detail.html', {
+        "composer": composer,
+        'composers': composers
+    })
+
+
+def search(request):
+    query = request.GET.get("search")
+    movies = (
+        Movie.objects.filter(Q(title__icontains=query))
+        .order_by("-date")
+    )
+    genres = (
+        Genre.objects.filter(Q(title__icontains=query))
+    )
+    return render(request, "netflix/search.html", {"query": query, "movies": movies, 'genres': genres})
+
+
+def comment(request, slug):
+    movie = Movie.objects.get(slug__exact=slug)
+    if request.method == 'POST':
+        comment = movie.comment_set.create(
+            author=request.user,
+            text=request.POST.get('text')
+        )
+        if request.user.is_superuser:
+            comment.publish = True
+            comment.save()
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
+
+
+def comment_like(request, slug, pk):
+    movie = Movie.objects.get(slug__exact=slug)
+    comment = movie.comment_set.get(pk=pk)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not comment.commentlike_set.filter(user=request.user).exists():
+                comment.commentlike_set.create(user=request.user)
+                if comment.commentdislike_set.filter(user=request.user).exists():
+                    comment_dislike = request.user.commentdislike_set.get(
+                        comment=comment)
+                    comment_dislike.delete()
+            else:
+                comment_like = request.user.commentlike_set.get(comment=comment)
+                comment_like.delete()
+        else:
+            return redirect('signin')
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
+
+
+def comment_dislike(request, slug, pk):
+    movie = Movie.objects.get(slug__exact=slug)
+    comment = movie.comment_set.get(pk=pk)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            if not comment.commentdislike_set.filter(user=request.user).exists():
+                comment.commentdislike_set.create(user=request.user)
+                if comment.commentlike_set.filter(user=request.user).exists():
+                    comment_like = request.user.commentlike_set.get(comment=comment)
+                    comment_like.delete()
+            else:
+                comment_dislike = request.user.commentdislike_set.get(comment=comment)
+                comment_dislike.delete()
+        else:
+            return redirect('signin')
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
+
+
+def comment_delete(request, slug, pk):
+    movie = Movie.objects.get(slug__exact=slug)
+    comment = movie.comment_set.get(pk=pk)
+    if comment.author == request.user:
+        if request.method == 'POST':
+            comment.delete()
+    return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
+
+
 # ------------------------------
 
 
@@ -172,6 +231,8 @@ def firstChoice(request, slug):
             else:
                 firstchoice = request.user.firstchoice_set.get(actor=actor)
                 firstchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('actor_detail_url', kwargs={'slug': slug}))
 
 
@@ -188,6 +249,8 @@ def secondChoice(request, slug):
             else:
                 secondchoice = request.user.secondchoice_set.get(actor=actor)
                 secondchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('actor_detail_url', kwargs={'slug': slug}))
 
 
@@ -208,6 +271,8 @@ def DirectorFirstChoice(request, slug):
                 firstchoice = request.user.firstchoice_set.get(
                     director=director)
                 firstchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('director_detail_url', kwargs={'slug': slug}))
 
 
@@ -225,6 +290,8 @@ def DirectorSecondChoice(request, slug):
                 secondchoice = request.user.secondchoice_set.get(
                     director=director)
                 secondchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('director_detail_url', kwargs={'slug': slug}))
 
 
@@ -245,6 +312,8 @@ def ComposerFirstChoice(request, slug):
                 firstchoice = request.user.firstchoice_set.get(
                     composer=composer)
                 firstchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('composer_detail_url', kwargs={'slug': slug}))
 
 
@@ -262,6 +331,8 @@ def ComposerSecondChoice(request, slug):
                 secondchoice = request.user.secondchoice_set.get(
                     composer=composer)
                 secondchoice.delete()
+        else:
+            return redirect('signin')
     return redirect(reverse('composer_detail_url', kwargs={'slug': slug}))
 
 
@@ -330,3 +401,77 @@ def sort(request):
     query = request.GET.get('sort')
     movie = Movie.objects.order_by(query)
     return render(request, 'netflix/sort.html', {"query": query, "movie": movie})
+
+
+def liked(request):
+    if not request.user.is_authenticated:
+        return redirect('index')
+    genres = Genre.objects.order_by('-id')
+    return render(request, "netflix/profile_liked.html", {'genres': genres})
+
+
+def watched(request):
+    if not request.user.is_authenticated:
+        return redirect('index')
+    genres = Genre.objects.all()
+    return render(request, "netflix/profile_watched.html", {'genres': genres})
+
+
+def comments(request):
+    if not request.user.is_authenticated:
+        return redirect('index')
+    comments = request.user.comment_set.all().order_by('-date')
+    return render(request, "netflix/profile_comments.html", {'comments': comments})
+
+
+def user_liked(request, username):
+    user = User.objects.get(username__exact=username)
+    genres = Genre.objects.order_by('-id')
+    return render(request, "netflix/user_liked.html", {'user': user, 'genres': genres})
+
+
+def user_watched(request, username):
+    user = User.objects.get(username__exact=username)
+    genres = Genre.objects.all()
+    return render(request, "netflix/user_watched.html", {'user': user, 'genres': genres})
+
+
+def user_comments(request, username):
+    user = User.objects.get(username__exact=username)
+    return render(request, "netflix/user_comments.html", {'user': user})
+
+
+# def pp_edit(request):
+#     if request.user.is_authenticated:
+#         if request.method == 'POST':
+#             form = ProfilePictureForm(request.POST, request.FILES)
+#             if form.is_valid():
+#                 form.save(request.user)
+#         form = ProfilePictureForm(
+#             initial={
+#                 'picture': request.user.profile.picture,
+#             }
+#         )
+#     return redirect('profile')
+
+
+def profile_edit(request):
+    if request.user.is_authenticated:
+        message = None
+        if request.method == 'POST':
+            form = ProfileForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save(request.user)
+                message = 'Changes saved !'
+                return render(request, "netflix/profile.html", {"message": message})
+        form = ProfileForm(
+            initial={
+                'picture': request.user.profile.picture,
+                'email': request.user.email,
+                'username': request.user.username,
+                'first_name': request.user.first_name,
+                'last_name': request.user.last_name,
+            }
+        )
+        return render(request, 'netflix/profile_edit.html', {'form': form})
+    return redirect('index')

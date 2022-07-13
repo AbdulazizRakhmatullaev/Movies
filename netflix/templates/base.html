@@ -49,8 +49,8 @@
                         {% if request.user.is_authenticated %}
 
                         <a href="{% url 'profile' %}">
-                            {% if user.profile.picture.url != null %}
-                            <img class="pp" src="{{user.profile.picture.url}}" alt="PP">
+                            {% if request.user.profile.picture.url != null %}
+                            <img class="pp" src="{{request.user.profile.picture.url}}" alt="PP">
                             {% else %}
                             <img class="pp" src="../../media/BlueHead.png" alt="PP">
                             {% endif %}
@@ -66,9 +66,11 @@
             </div>
         </nav>
         <main id="main">
-            {% block content %}
+            <div class="p20">
+                {% block content %}
 
-            {% endblock %}
+                {% endblock %}
+            </div>
         </main>
     </section>
 
@@ -76,6 +78,9 @@
     <script type="text/javascript">
         function confirm_logout() {
             return confirm('Are You Sure You Want to Sign out from Your Account?');
+        }
+        function confirm_delete() {
+            return confirm('Are You Sure You Want to Delete Your Comment?');
         }
     </script>
 </body>

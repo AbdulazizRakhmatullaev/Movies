@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 
+
 {% block title %}
 {{query}}
 {% endblock %}
@@ -8,23 +9,45 @@
 
 
 <div class="genre">
-    <h1 class="g-name">Find a Movie by genre</h1>
+    <h1 class="g-name">Genres</h1>
 </div>
-<div id="genre-column">
-    {% for genre in genres %}
-    <a href=" {% url 'genre_detail_url' genre.slug %}">
-        <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-            <img src="{{genre.image.url}}" alt="">
-            <div class="overlay">
-                <div class="bottom-left">{{genre.title}}</div>
+<div id="sub-flex" style="position: relative;">
+    <!-- <div class="left-smooth-fade"></div> -->
+    <div id="sub-genre-column">
+        {% for genre in genres %}
+        <a href="{% url 'genre_detail_url' genre.slug %}"
+            style="{% if not forloop.first %} margin-left: 6px; {% endif %} {% if forloop.last %} margin-right: 20px; {% endif %}">
+            <div class="sub-genre-item"
+                style="{% if request.path == genre.current_path %} background: #eaf0fd; color: #1558d6; border-color: #d5e2fa; {% endif %}">
+                <div class="sub-genre">{{genre.title}}</div>
             </div>
-        </div>
-    </a>
-    {% endfor %}
+        </a>
+        {% empty %}
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        <div class="sub-genre-loading"></div>
+        {% endfor %}
+    </div>
+    <div class="right-smooth-fade"></div>
 </div>
 
-<div class="hr"></div>
-<div class="g-name">Results for search "<b>{{query}}</b>"</div>
+<div class="genre">
+    <h1 class="g-name">Movies</h1>
+</div>
+
 <div id="movie">
     {% for movie in movies %}
     <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
@@ -36,7 +59,7 @@
         </div>
     </div>
     {% empty %}
-    <span class="g-name">not found</span>
+    <span class="g-name">named "<b>{{query}}</b>" not found</span>
     {% endfor %}
 </div>
 

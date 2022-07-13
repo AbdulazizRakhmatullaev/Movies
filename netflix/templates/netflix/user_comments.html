@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Comments
+{% endblock %}
+
+{% block content %}
+<div class="profile-detail-container">
+    <div class="main-profile-info">
+        <div class="pr20">
+            <div id="profile-flex">
+                {% if user.profile.picture.url != null %}
+                <img class="pp-detail" src="{{user.profile.picture.url}}" alt="">
+                {% else %}
+                <img class="pp-detail" src="../../media/BlueHead.png" alt="">
+                {% endif %}
+                <div class="profile-detail-info">
+                    <p class="profile-username">{{user.username}}</p>
+                    <p class="profile-email">
+                        {{user.email}}
+                    </p>
+                    <div id="flex">
+                        <p class="profile-firstname">{{user.first_name}}</p>
+                        <p class="profile-lastname">{{user.last_name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="profile-navigation">
+                <a href="{% url 'user_detail_url' user.username %}">
+                    <button class="pr-btn">
+                        <div class="com-icon" style="background: linear-gradient(#d6e6ed, #767675);">
+                            <svg xmlns="http://www.w3.org/2000/svg" style="height: 15px; margin: 5px;"
+                                class="bi bi-people-fill" viewBox="0 0 16 16">
+                                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                <path fill-rule="evenodd"
+                                    d="M5.216 14A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216z" />
+                                <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
+                            </svg>
+                        </div>
+                        <div class="ml-10">Home</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_comments' user.username %}">
+                    <button class="pr-btn dadce0">
+                        <img class="com-icon" src="../../../media/com_icon.webp" alt="">
+                        <div class="ml-10">Comments</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_liked' user.username %}">
+                    <button class="pr-btn">
+                        <img class="com-icon" src="../../../media/liked.png" alt="">
+                        <div class="ml-10">Liked</div>
+                    </button>
+                </a>
+                <a href="{% url 'user_watched' user.username %}">
+                    <button class="pr-btn">
+                        <img class="com-icon" src="../../../media/watched 2.jpeg" alt="">
+                        <div class="ml-10">Watched</div>
+                    </button>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="side-profile-info" style="border-left: 1px solid #dadce0;">
+        <div class="pl20">
+            <div class="cool-text">Comments</div>
+            <div class="user-review-column">
+                {% for comment in user.comment_set.all %}
+                <div style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                    <div id="flex">
+                        <div class="comment-item">
+                            <div class="user-com-pic">
+                                {% if user.profile.picture.url != null %}
+                                <img class="user-avatar" src="{{user.profile.picture.url}}" alt="">
+                                {% else %}
+                                <img class="user-avatar" src="../../media/BlueHead.png" alt="">
+                                {% endif %}
+                            </div>
+                            <a href="{% url 'movie_detail_url' comment.movie.slug %}">
+                                <div class="user-com">
+                                    <!-- <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div> -->
+                                    <div class="user-com-text" style="height: inherit;">{{comment.text}}</div>
+                                </div>
+                                <div id="cm-delete-align">
+                                    <i class="comment-date-profile">{{comment.date|date:"F d, Y"}}</i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                No comments yet.
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
