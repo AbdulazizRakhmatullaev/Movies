@@ -6,75 +6,671 @@ Home
 
 {% block content %}
 
-<div class="genre">
-    <h1 class="g-name">Genres</h1>
+<div class="genre phone-none">
+    <h1 class="g-name phone-none">Genres</h1>
 </div>
 
-<div id="genre-column">
+<div class="phone-none">
+    <div id="genre-column">
+        {% for genre in genres %}
+        <a href=" {% url 'genre_detail_url' genre.slug %}">
+            <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                <img src="{{genre.image.url}}" alt="{{movie.genre.name}}">
+                <div class="overlay"></div>
+                <div class="bottom-left">{{genre.title}}</div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="mobile">
+    <div class="index-mobile-center">
+        <div class="genre">
+            <h1 class="g-name">Genres</h1>
+        </div>
+
+        <div id="genre-column">
+            {% for genre in genres %}
+            <a href=" {% url 'genre_detail_url' genre.slug %}">
+                <div class="genre-item" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                    <img src="{{genre.image.url}}" alt="{{movie.genre.name}}">
+                    <div class="overlay"></div>
+                    <div class="bottom-left">{{genre.title}}</div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<div class="phone-none">
+    <div class="genre">
+        <h1 class="g-name">New Movies</h1>
+    </div>
+
+    <div id="movie">
+        {% for movie in movies %}
+        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <a href="{% url 'movie_detail_url' movie.slug %}">
+                <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+            </a>
+            <div class="mov-info">
+                <h1>{{movie.title}}</h1>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mobile">
+    <div class="index-mobile-center">
+
+        <div class="genre">
+            <h1 class="g-name">New Movies</h1>
+        </div>
+
+        <div id="movie">
+            {% for movie in movies %}
+            <div class="mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                <a href="{% url 'movie_detail_url' movie.slug %}">
+                    <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                </a>
+                <div class="mov-info">
+                    <h1>{{movie.title}}</h1>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="phone-none">
+    <div class="genre">
+        <h1 class="g-name">Popular Movies</h1>
+    </div>
+
+    <div id="movie">
+        {% for popular in populars %}
+        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <a href="{% url 'movie_detail_url' popular.slug %}">
+                <img class="poster" src="{{popular.poster.url}}" alt="POSTER">
+            </a>
+            <div class="mov-info">
+                <h1>{{popular.title}}</h1>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<div class="mobile">
+    <div class="index-mobile-center">
+
+        <div class="genre">
+            <h1 class="g-name">Popular Movies</h1>
+        </div>
+
+        <div id="movie">
+            {% for popular in populars %}
+            <div class="mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                <a href="{% url 'movie_detail_url' popular.slug %}">
+                    <img class="poster" src="{{popular.poster.url}}" alt="POSTER">
+                </a>
+                <div class="mov-info">
+                    <h1>{{popular.title}}</h1>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<div class="phone-none">
     {% for genre in genres %}
-    <a href=" {% url 'genre_detail_url' genre.slug %}">
-        <div class="genre-item" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-            <img src="{{genre.image.url}}" alt="{{movie.genre.name}}">
-            <div class="overlay"></div>
-            <div class="bottom-left">{{genre.title}}</div>
+
+    <div class="genre">
+        <h1 class="g-name">{{genre.title}}</h1>
+    </div>
+    <div id="movie">
+        {% for movie in genre.movie_set.all %}
+
+        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <a href="{% url 'movie_detail_url' movie.slug %}">
+                <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+            </a>
+            <div class="mov-info">
+                <h1>{{movie.title}}</h1>
+            </div>
         </div>
-    </a>
-    {% endfor %}
-</div>
-
-
-<div class="genre">
-    <h1 class="g-name">New Movies</h1>
-</div>
-
-<div id="movie">
-    {% for movie in movies %}
-    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-        <a href="{% url 'movie_detail_url' movie.slug %}">
-            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
-        </a>
-        <div class="mov-info">
-            <h1>{{movie.title}}</h1>
-        </div>
+        {% endfor %}
     </div>
     {% endfor %}
 </div>
 
-<div class="genre">
-    <h1 class="g-name">Popular Movies</h1>
-</div>
+<div class="mobile">
+    <div class="index-mobile-center">
+        {% for genre in genres %}
 
-<div id="movie">
-    {% for popular in populars %}
-    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-        <a href="{% url 'movie_detail_url' popular.slug %}">
-            <img class="poster" src="{{popular.poster.url}}" alt="POSTER">
-        </a>
-        <div class="mov-info">
-            <h1>{{popular.title}}</h1>
+        <div class="genre">
+            <h1 class="g-name">{{genre.title}}</h1>
+        </div>
+        <div id="movie">
+            {% for movie in genre.movie_set.all %}
+
+            <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                <a href="{% url 'movie_detail_url' movie.slug %}">
+                    <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                </a>
+                <div class="mov-info">
+                    <h1>{{movie.title}}</h1>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+
+<div class="phone-none">
+    <div class="" id="footer">
+        <div class="footer-row">
+            <div class="pa20">
+                <div class="main-footer-info">
+                    <span class="footer-text">
+                        if request.user.reached.this_footer: <br>
+                        ㅤㅤreturn ('Hello World') <br>
+                        . <br>
+                        . <br>
+                        . <br>
+                        Hello World <br> <br> This is my Movie website, the biggest project i have ever done,
+                        this took me a lil
+                        while (3 and a half month) to create, with a lot of issues in logic (backend) and lots of
+                        inaccuracy in design (frontend) i think, finally
+                        it's a fully ready website for entertainment with few copyrights in it, had no choice, sorry.
+                    </span>
+                </div>
+
+                <div class="website-responsive-2">
+                    <div class="website-section">
+                        <div class="website-text-2">All</div>
+                        <div class="section-sites">
+                            <a href="">
+                                Peace (world problems)
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Junglezon
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Bukhara Times
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Films
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Friendbook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Metube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Postify
+                            </a>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="website-text-2">Entertainment</div>
+                        <div class="section-sites">
+                            <a href="">
+                                Films
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Friendbook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Metube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Postify
+                            </a>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Movies website</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Films
+                                </a>
+                            </div>
+                        </div>
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Music</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Postify
+                                </a>
+                            </div>
+                        </div>
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Video</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Metube
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="website-text-2">About Developer</div>
+                        <div class="section-sites">
+                            <a href="https://www.instagram.com/r.abdu44/">
+                                Instagram
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://www.facebook.com/r.abdu44/">
+                                Facebook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://www.youtube.com/channel/UCvliVjO2DIe6e2mBSQASeFg">
+                                Youtube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://github.com/rabdu44">
+                                Github
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+
+                <div id="flex" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <span class="copyright-text">
+                            Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                        </span>
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                            Uzbekistan
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 
-{% for genre in genres %}
+<div class="footer-phone-none">
+    <div class="" id="footer">
+        <div class="pa20">
+            <div class="footer-row">
+                <div class="main-footer-info">
+                    <span class="footer-text">
+                        if request.user.reached.this_footer: <br>
+                        ㅤㅤreturn ('Hello World') <br>
+                        . <br>
+                        . <br>
+                        . <br>
+                        Hello World <br> <br> This is my Movie website, the biggest project i have ever done,
+                        this took me a lil
+                        while (3 and a half month) to create, with a lot of issues in logic (backend) and lots of
+                        inaccuracy in design (frontend) i think, finally
+                        it's a fully ready website for entertainment with few copyrights in it, had no choice, sorry.
+                    </span>
+                </div>
 
-<div class="genre">
-    <h1 class="g-name">{{genre.title}}</h1>
-</div>
-<div id="movie">
-    {% for movie in genre.movie_set.all %}
+                <div class="website-responsive-2">
+                    <div class="website-section">
+                        <div class="website-text-2">All</div>
+                        <div class="section-sites">
+                            <a href="">
+                                Peace (world problems)
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Junglezon
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Bukhara Times
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Films
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Friendbook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Metube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Postify
+                            </a>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="website-text-2">Entertainment</div>
+                        <div class="section-sites">
+                            <a href="">
+                                Films
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Friendbook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Metube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="">
+                                Postify
+                            </a>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Movies website</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Films
+                                </a>
+                            </div>
+                        </div>
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Music</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Postify
+                                </a>
+                            </div>
+                        </div>
+                        <div class="sub-webstie-section">
+                            <div class="website-text-2">Video</div>
+                            <div class="section-sites">
+                                <a href="">
+                                    Metube
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="website-section">
+                        <div class="website-text-2">About Developer</div>
+                        <div class="section-sites">
+                            <a href="https://www.instagram.com/r.abdu44/">
+                                Instagram
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://www.facebook.com/r.abdu44/">
+                                Facebook
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://www.youtube.com/channel/UCvliVjO2DIe6e2mBSQASeFg">
+                                Youtube
+                            </a>
+                        </div>
+                        <div class="section-sites">
+                            <a href="https://github.com/rabdu44">
+                                Github
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-        <a href="{% url 'movie_detail_url' movie.slug %}">
-            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
-        </a>
-        <div class="mov-info">
-            <h1>{{movie.title}}</h1>
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+
+                <div id="flex" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <span class="copyright-text">
+                            Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                        </span>
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                            Uzbekistan
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    {% endfor %}
 </div>
-{% endfor %}
-<!--  -->
+
+<div class="mobile-footer">
+    <div id="footer">
+        <div class="pa20">
+            <div class="footer-row">
+                <div class="main-footer-info">
+                    <span class="footer-text">
+                        if request.user.reached.this_footer: <br>
+                        ㅤㅤreturn ('Hello World') <br>
+                        . <br>
+                        . <br>
+                        . <br>
+                        Hello World <br> <br> This is my Movie website, the biggest project i have ever done,
+                        this took me a lil
+                        while (3 and a half month) to create, with a lot of issues in logic (backend) and lots of
+                        inaccuracy in design (frontend) i think, finally
+                        it's a fully ready website for entertainment with few copyrights in it, had no choice, sorry.
+                    </span>
+                </div>
+                <div class="web-sites">
+                    <a href="">
+                        <div class="website">
+                            Films
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Friendbook
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Peace (World Problems)
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Metube
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Postify
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Bukhara Times
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <a href="">
+                        <div class="website">
+                            Junglezon
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                class="bi bi-plus" viewBox="0 0 16 16">
+                                <path
+                                    d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                            </svg>
+                        </div>
+                    </a>
+                    <div class="website-text-2" style="margin-top: 15px;">About Developer</div>
+                    <div class="flexed-links">
+                        <div class="link-item">
+                            <a href="https://www.instagram.com/r.abdu44/">Instagram</a>
+                        </div>
+                        <div class="link-item">
+                            <a href="https://www.facebook.com/r.abdu44/">Facebook</a>
+                        </div>
+                        <div class="link-item">
+                            <a href="https://www.youtube.com/channel/UCvliVjO2DIe6e2mBSQASeFg">Youtube</a>
+                        </div>
+                        <div class="link-item">
+                            <a href="https://github.com/rabdu44">Github</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+                <p class="copyright-text">
+                    Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                </p>
+                <div id="flex" class="mt20" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none; padding-left: 0;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="https://www.instagram.com/r.abdu44/">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <div>
+                            <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                                Uzbekistan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

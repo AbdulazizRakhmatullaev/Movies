@@ -5,98 +5,212 @@
 {% endblock %}
 
 {% block content %}
-<div class="person-detail-container">
-    <div id="flex">
-        <div class="main-info">
-            <div class="pr">
-                <div id="flex">
-                    <img src="{{composer.image.url}}" alt="" class="person-photo">
-                    <div class="person-info">
-                        <h1 class="person-detail-name">{{composer.name}}</h1>
-                        <p class="person-type">{{composer.type}}</p>
-                        <p class="person-desc">{{composer.description}}</p>
-                    </div>
-                </div>
-                <div class="hr"></div>
-                <div id="flex">
-                    <span class="cast-text">Movies</span>
-                </div>
-                <div id="person-in-movies-column">
-                    {% for movie in composer.movie_set.all %}
-                    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 10px; {% endif %}">
-                        <a href="{% url 'movie_detail_url' movie.slug %}">
-                            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
-                        </a>
-                        <div class="mov-info">
-                            <h1>{{movie.title}}</h1>
+
+<div class="phone-none">
+    <div class="person-detail-container">
+        <div id="flex">
+            <div class="main-info">
+                <div class="pr">
+                    <div id="flex">
+                        <img src="{{composer.image.url}}" alt="" class="person-photo">
+                        <div class="person-info">
+                            <h1 class="person-detail-name">{{composer.name}}</h1>
+                            <p class="person-type">{{composer.type}}</p>
+                            <p class="person-desc">{{composer.description}}</p>
                         </div>
                     </div>
+                    <div class="hr"></div>
+                    <div id="flex">
+                        <span class="cast-text">Movies</span>
+                    </div>
+                    <div id="person-in-movies-column">
+                        {% for movie in composer.movie_set.all %}
+                        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 10px; {% endif %}">
+                            <a href="{% url 'movie_detail_url' movie.slug %}">
+                                <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                            </a>
+                            <div class="mov-info">
+                                <h1>{{movie.title}}</h1>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="side-info"
+                style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden; padding-bottom: 20px;">
+                <div class="poll">
+                    {% for poll in composer.poll_set.all %}
+                    <div class="question">
+                        <div class="va">
+                            <p class="quest">
+                                {{poll.question}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="vote">
+                        <form method="POST" id="flex" style="width: 100%;"
+                            action="{% url 'ComposerFirstChoice' composer.slug %}">
+                            {% csrf_token %}
+                            {% if poll.composer.firstchoice_set.user.exists %}
+                            <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
+                            {% else %}
+                            <input class="vote-radio" type="radio" id="firstchoice">
+                            {% endif %}
+                            <button class="vote-btn"
+                                style="{% if poll.composer.firstchoice_set.user.exists %} background: #ebebeb; {% endif %}"
+                                id="button" onclick="firstchoice_check()">
+                                <div class="vote-text">
+                                    {{poll.firstchoice_title}}
+                                </div>
+                                <div class="vote-text">
+                                    {{composer.firstchoice_set.count}}
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <div class="vote">
+                        <form method="POST" id="flex" style="width: 100%;"
+                            action="{% url 'ComposerSecondChoice' composer.slug %}">
+                            {% csrf_token %}
+                            {% if composer.secondchoice_set.user.exists %}
+                            <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
+                            {% else %}
+                            <input class="vote-radio" type="radio" id="firstchoice">
+                            {% endif %}
+                            <button class="vote-btn"
+                                style="{% if composer.secondchoice_set.user.exists %} background: #ebebeb; {% endif %}"
+                                id="button" onclick="secondchoice_check()">
+                                <div class="vote-text">
+                                    {{poll.secondchoice_title}}
+                                </div>
+                                <div class="vote-text">
+                                    {{composer.secondchoice_set.count}}
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <span class="results">{{composer.firstchoice_set.count}}/{{composer.secondchoice_set.count}}
+                        votes</span>
+                    {% endfor %}
+                </div>
+                <div class="hr"></div>
+                <div class="more-interest">
+                    <div id="flex">
+                        <span class="cast-text" style="font-size: 18px;">More Composers</span>
+                    </div>
+                    <div class="more-cast-column">
+                        {% for composer in composers %}
+                        <a href="{% url 'composer_detail_url' composer.slug %}">
+                            <div class="more-actor" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                                <div class="more-actor-picture">
+                                    <img src="{{composer.image.url}}" alt="{{composer.name}}">
+                                </div>
+                                <div class="more-actor-n_r">
+                                    <div class="more-actor-name">{{composer.name}}</div>
+                                    <div class="more-actor-role">{{role.role}}</div>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mobile">
+    <div class="person-detail-container">
+        <div class="side-info">
+            <div id="flex">
+                <img src="{{composer.image.url}}" alt="" class="person-photo">
+                <div class="person-info">
+                    <h1 class="person-detail-name">{{composer.name}}</h1>
+                    <p class="person-type">{{composer.type}}</p>
+                </div>
+            </div>
+            <p class="person-desc">{{composer.description}}</p>
+            <div class="hr"></div>
+            <span class="cool-text">Movies</span>
+            <div id="person-in-movies-column">
+                {% for movie in composer.movie_set.all %}
+                <div class="mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                    <a href="{% url 'movie_detail_url' movie.slug %}">
+                        <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+                    </a>
+                    <div class="mov-info">
+                        <h1>{{movie.title}}</h1>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <div class="hr"></div>
+        </div>
+        <div class="side-info" style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden;">
+            <div style="padding: 20px;">
+                <div class="poll">
+                    {% for poll in composer.poll_set.all %}
+                    <div class="question">
+                        <div class="va">
+                            <p class="quest">
+                                {{poll.question}}
+                            </p>
+                        </div>
+                    </div>
+                    <div class="vote">
+                        <form method="POST" id="flex" style="width: 100%;"
+                            action="{% url 'ComposerFirstChoice' composer.slug %}">
+                            {% csrf_token %}
+                            {% if firstchoice_set.user.exists %}
+                            <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
+                            <button class="vote-btn" style="background: #ebebeb;">
+                                <div class="vote-text">
+                                    {{poll.firstchoice_title}}
+                                </div>
+                                <div class="vote-text">
+                                    {{composer.firstchoice_set.count}}
+                                </div>
+                            </button>
+                            {% else %}
+                            <input class="vote-radio" type="radio" id="firstchoice">
+                            <button class="vote-btn">
+                                <div class="vote-text">
+                                    {{poll.firstchoice_title}}
+                                </div>
+                                <div class="vote-text">
+                                    {{composer.firstchoice_set.count}}
+                                </div>
+                            </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                    <div class="vote">
+                        <form method="POST" id="flex" style="width: 100%;"
+                            action="{% url 'ComposerSecondChoice' composer.slug %}">
+                            {% csrf_token %}
+                            <input class="vote-radio" type="radio" id="secondchoice">
+                            <button class="vote-btn"
+                                id="button" onclick="secondchoice_check()">
+                                <div class="vote-text">
+                                    {{poll.secondchoice_title}}
+                                </div>
+                                <div class="vote-text">
+                                    {{composer.secondchoice_set.count}}
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+                    <span class="results">{{composer.firstchoice_set.count}}/{{composer.secondchoice_set.count}}
+                        votes</span>
                     {% endfor %}
                 </div>
             </div>
         </div>
-        <div class="side-info"
-            style="border: 1px solid #dadce0; border-radius: 15px; overflow: hidden; padding-bottom: 20px;">
-            <div class="poll">
-                {% for poll in composer.poll_set.all %}
-                <div class="question">
-                    <div class="va">
-                        <p class="quest">
-                            {{poll.question}}
-                        </p>
-                    </div>
-                </div>
-                <div class="vote">
-                    <form method="POST" id="flex" style="width: 100%;"
-                        action="{% url 'ComposerFirstChoice' composer.slug %}">
-                        {% csrf_token %}
-                        {% if poll.composer.firstchoice_set.user.exists %}
-                        <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
-                        {% else %}
-                        <input class="vote-radio" type="radio" id="firstchoice">
-                        {% endif %}
-                        <button class="vote-btn"
-                            style="{% if poll.composer.firstchoice_set.user.exists %} background: #ebebeb; {% endif %}"
-                            id="button" onclick="firstchoice_check()">
-                            <div class="vote-text">
-                                {{poll.firstchoice_title}}
-                            </div>
-                            <div class="vote-text">
-                                {{composer.firstchoice_set.count}}
-                            </div>
-                        </button>
-                    </form>
-                </div>
-                <div class="vote">
-                    <form method="POST" id="flex" style="width: 100%;"
-                        action="{% url 'ComposerSecondChoice' composer.slug %}">
-                        {% csrf_token %}
-                        {% if composer.secondchoice_set.user.exists %}
-                        <input class="vote-radio" type="radio" id="firstchoice" checked="checked">
-                        {% else %}
-                        <input class="vote-radio" type="radio" id="firstchoice">
-                        {% endif %}
-                        <button class="vote-btn"
-                            style="{% if composer.secondchoice_set.user.exists %} background: #ebebeb; {% endif %}"
-                            id="button" onclick="secondchoice_check()">
-                            <div class="vote-text">
-                                {{poll.secondchoice_title}}
-                            </div>
-                            <div class="vote-text">
-                                {{composer.secondchoice_set.count}}
-                            </div>
-                        </button>
-                    </form>
-                </div>
-                <span class="results">{{composer.firstchoice_set.count}}/{{composer.secondchoice_set.count}}
-                    votes</span>
-                {% endfor %}
-            </div>
-            <div class="hr"></div>
+        <div class="mobile-center">
             <div class="more-interest">
-                <div id="flex">
-                    <span class="cast-text" style="font-size: 18px;">More Composers</span>
-                </div>
+                <div style="margin-top: 10px;"></div>
+                <span class="cool-text">More composers</span>
                 <div class="more-cast-column">
                     {% for composer in composers %}
                     <a href="{% url 'composer_detail_url' composer.slug %}">
@@ -106,7 +220,7 @@
                             </div>
                             <div class="more-actor-n_r">
                                 <div class="more-actor-name">{{composer.name}}</div>
-                                <div class="more-actor-role">{{role.role}}</div>
+                                <div class="more-actor-role">{{composer.role}}</div>
                             </div>
                         </div>
                     </a>

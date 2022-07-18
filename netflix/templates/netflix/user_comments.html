@@ -6,7 +6,7 @@ Comments
 
 {% block content %}
 <div class="profile-detail-container">
-    <div class="main-profile-info">
+    <div class="main-profile-info phone-none">
         <div class="pr20">
             <div id="profile-flex">
                 {% if user.profile.picture.url != null %}
@@ -25,7 +25,7 @@ Comments
                     </div>
                 </div>
             </div>
-            <div class="profile-navigation">
+            <div class="profile-navigation phone-none">
                 <a href="{% url 'user_detail_url' user.username %}">
                     <button class="pr-btn">
                         <div class="com-icon" style="background: linear-gradient(#d6e6ed, #767675);">
@@ -37,7 +37,7 @@ Comments
                                 <path d="M4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" />
                             </svg>
                         </div>
-                        <div class="ml-10">Home</div>
+                        <div class="ml-10">Main</div>
                     </button>
                 </a>
                 <a href="{% url 'user_comments' user.username %}">
@@ -49,7 +49,7 @@ Comments
                 <a href="{% url 'user_liked' user.username %}">
                     <button class="pr-btn">
                         <img class="com-icon" src="../../../media/liked.png" alt="">
-                        <div class="ml-10">Liked</div>
+                        <div class="ml-10">Liked movies</div>
                     </button>
                 </a>
                 <a href="{% url 'user_watched' user.username %}">
@@ -61,12 +61,54 @@ Comments
             </div>
         </div>
     </div>
+    <div class="mobile profile-bottom-fixed">
+        <div class="bottom-row">
+            <a href="{% url 'user_detail_url' user.username %}" class="pr-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="bi bi-person" viewBox="0 0 16 16">
+                    <path
+                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                </svg>
+            </a>
+            <a href="{% url 'user_comments' user.username %}" class="pr-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" style="height: 25px;" class="bi bi-chat-fill"
+                    viewBox="0 0 16 16">
+                    <path
+                        d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9.06 9.06 0 0 0 8 15z" />
+                </svg>
+            </a>
+            <a href="{% url 'user_liked' user.username %}" class="pr-btn">
+                <svg viewBox="0 0 24 24" preserveAspectRatio="xMidYMid meet" focusable="false"
+                    class="style-scope yt-icon" style="height: 30px; margin: auto 5px;">
+                    <g class="style-scope yt-icon">
+                        <path
+                            d="M18.77,11h-4.23l1.52-4.94C16.38,5.03,15.54,4,14.38,4c-0.58,0-1.14,0.24-1.52,0.65L7,11H3v10h4h1h9.43 c1.06,0,1.98-0.67,2.19-1.61l1.34-6C21.23,12.15,20.18,11,18.77,11z M7,20H4v-8h3V20z M19.98,13.17l-1.34,6 C18.54,19.65,18.03,20,17.43,20H8v-8.61l5.6-6.06C13.79,5.12,14.08,5,14.38,5c0.26,0,0.5,0.11,0.63,0.3 c0.07,0.1,0.15,0.26,0.09,0.47l-1.52,4.94L13.18,12h1.35h4.23c0.41,0,0.8,0.17,1.03,0.46C19.92,12.61,20.05,12.86,19.98,13.17z"
+                            class="style-scope yt-icon"></path>
+                    </g>
+                </svg>
+            </a>
+            <a href="{% url 'user_watched' user.username %}" class="pr-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" style="height: 34px;" class="bi bi-play" viewBox="0 0 16 16">
+                    <path
+                        d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z" />
+                </svg>
+            </a>
+        </div>
+    </div>
     <div class="side-profile-info" style="border-left: 1px solid #dadce0;">
         <div class="pl20">
-            <div class="cool-text">Comments</div>
+            <div class="mobile">
+                <div id="flex">
+                    <div class="hr"></div>
+                    <div class="centered">Comments</div>
+                    <div class="hr"></div>
+                </div>
+            </div>
+            <div class="phone-none">
+                <div class="cool-text">Comments</div>
+            </div>
             <div class="user-review-column">
                 {% for comment in user.comment_set.all %}
-                <div style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+                <div class="mob-w100 phone-none" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
                     <div id="flex">
                         <div class="comment-item">
                             <div class="user-com-pic">
@@ -86,6 +128,33 @@ Comments
                                     <div class="user-com-text" style="height: inherit;">{{comment.text}}</div>
                                 </div>
                                 <div id="cm-delete-align">
+                                    <i class="comment-date-profile">{{comment.date|date:"F d, Y"}}</i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mob-w100 mobile">
+                    <div id="flex">
+                        <div class="comment-item" style="margin-bottom: 20px;">
+                            <div class="user-com-pic">
+                                {% if user.profile.picture.url != null %}
+                                <img class="user-avatar" src="{{user.profile.picture.url}}" alt="">
+                                {% else %}
+                                <img class="user-avatar" src="../../media/BlueHead.png" alt="">
+                                {% endif %}
+                            </div>
+                            <a class="mob-w100" href="{% url 'movie_detail_url' comment.movie.slug %}">
+                                <div class="user-com">
+                                    <!-- <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div>
+                                    <div id="star"></div> -->
+                                    <div class="user-com-text" style="height: inherit;">{{comment.text}}</div>
+                                </div>
+                                <div id="flex" style="justify-content: flex-end;">
                                     <i class="comment-date-profile">{{comment.date|date:"F d, Y"}}</i>
                                 </div>
                             </a>

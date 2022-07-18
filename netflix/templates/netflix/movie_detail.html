@@ -26,11 +26,11 @@
     <div class="right-smooth-fade"></div>
 </div>
 
-<div id="flex">
-    <div class="film">
-        <div id="flex">
-            <img class="film-poster" src="{{movie.poster.url}}" alt="POSTER">
-            <div class="film-info">
+<div class="film">
+    <div id="film-name-flex">
+        <img class="film-poster" src="{{movie.poster.url}}" alt="POSTER">
+        <div class="film-info">
+            <div class="align-center">
                 <h1>{{movie.title}}</h1>
                 <div class="p">
                     <p>{{movie.date|date:"Y"}}</p>
@@ -50,198 +50,372 @@
 </div>
 
 <div class="hr"></div>
-<div id="flex">
-    <div class="main-info">
-        <div class="pr">
-            <div id="flex">
-                <span class="cast-text">Cast</span>
-            </div>
-            <div class="cast-column">
-                {% for actor in movie.cast.all %}
-                <a href="{% url 'actor_detail_url' actor.slug %}">
-                    <div class="actor" style="{% if not forloop.first %} margin-left: 8px; {% endif %}">
-                        <div class="actor-picture">
-                            <img src="{{actor.image.url}}" alt="{{actor.name}}">
-                        </div>
-                        <div class="actor-n_r">
-                            <div class="actor-name">{{actor.name}}</div>
-                            <div class="actor-role">{{role.role}}</div>
-                        </div>
-                    </div>
-                </a>
-                {% endfor %}
-            </div>
-            <div class="film-player">
-                <video controls>
-                    <source src="{{movie.movie.url}}">
-                </video>
-            </div>
-            <div class="comments">
-                <div id="flex">
-                    <span class="cast-text">{{movie.comment_set.count}} Comments</span>
-                </div>
 
-                {% if user.is_authenticated %}
-                <div class="user-input">
-                    <a href="{% url 'profile' %}">
-                        {% if user.profile.picture.url != null %}
-                        <img class="cp" src="{{user.profile.picture.url}}" alt="">
-                        {% else %}
-                        <img class="cp" src="../../media/BlueHead.png" alt="">
-                        {% endif %}
+<div class="phone-none">
+    <div id="movie-flex">
+        <div class="main-info">
+            <div class="pr">
+                <div class="phone-none">
+                    <span class="cast-text">Cast</span>
+                </div>
+                <div class="cast-column">
+                    {% for actor in movie.cast.all %}
+                    <a href="{% url 'actor_detail_url' actor.slug %}">
+                        <div class="actor" style="{% if not forloop.first %} margin-left: 8px; {% endif %}">
+                            <div class="actor-picture">
+                                <img src="{{actor.image.url}}" alt="{{actor.name}}">
+                            </div>
+                            <div class="actor-n_r">
+                                <div class="actor-name">{{actor.name}}</div>
+                                <div class="actor-role">{{role.role}}</div>
+                            </div>
+                        </div>
                     </a>
-                    <div style="width: 92%;">
-                        <form method="POST" action="{% url 'comment' movie.slug %}">
-                            {% csrf_token %}
-                            <input name="text" class="comment_input" type="text" placeholder="Add a comment...">
-                        </form>
+                    {% endfor %}
+                </div>
+                <div class="film-player">
+                    <video controls>
+                        <source src="{{movie.movie.url}}">
+                    </video>
+                </div>
+                <div class="likes mobile">
+                    <div>
+                        <span class="like-text">
+                            {{movie.like_set.count}} users liked this Movie
+                        </span>
+                        <p class="film-text">
+                            Films Website Users
+                        </p>
+                    </div>
+                    <div id="flex">
+                        <div id="flex">
+                            <form method="POST" action="{% url 'like' movie.slug %}">
+                                {% csrf_token %}
+                                {% if movie.like_set.exists %}
+                                <button name="like" class="like-btn">
+                                    <svg style="fill: #188038;" class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% else %}
+                                <button name="like" class="like-btn">
+                                    <svg class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                        {% csrf_token %}
+                        <div id="flex">
+                            <form method="POST" action="{% url 'dislike' movie.slug %}">
+                                {% csrf_token %}
+                                {% if movie.dislike_set.exists %}
+                                <button class="dislike-btn" name="dislike">
+                                    <svg style="fill: #c5221f;" class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% else %}
+                                <button class="dislike-btn" name="dislike">
+                                    <svg class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </form>
+                        </div>
                     </div>
                 </div>
-                {% else %}
-                <div class="user-input">
-                    <img class="comment_user_avatar" src="../../media/BlueHead.png" alt="">
-                    <a href="{% url 'signin' %}" style="width: 92%;">
-                        <input class="loggedout-comment_input" type="text" name="text" placeholder="Add a comment...">
-                    </a>
-                </div>
-                {% endif %}
-                {% for comment in movie.comment_set.all %}
-                <div class="review-column">
-                    <div class="c-section-first">
-                        {% if comment.author.id == user.id %}
+                <div class="comments">
+                    <span class="cast-text">{{movie.comment_set.count}} Comments</span>
+
+                    {% if user.is_authenticated %}
+                    <div class="user-input">
                         <a href="{% url 'profile' %}">
                             {% if user.profile.picture.url != null %}
-                            <img class="comment_user_avatar" src="{{user.profile.picture.url}}" alt="">
+                            <img class="cp" src="{{user.profile.picture.url}}" alt="">
                             {% else %}
-                            <img class="comment_user_avatar" src="../../media/BlueHead.png"
-                                alt="{{comment.author.username}}">
+                            <img class="cp" src="../../media/BlueHead.png" alt="">
                             {% endif %}
                         </a>
-                        {% else %}
-                        <a href="{% url 'user_detail_url' comment.author.profile %}">
-                            {% if comment.author.profile.picture.url != null %}
-                            <img class="comment_user_avatar" src="{{comment.author.profile.picture.url}}" alt="">
-                            {% else %}
-                            <img class="comment_user_avatar" src="../../media/BlueHead.png"
-                                alt="{{comment.author.username}}">
-                            {% endif %}
-                        </a>
-                        {% endif %}
-
-                    </div>
-                    {% if comment.author == request.user %}
-                    <div class="c-section-second" style="width: 82%;">
-                        <div id="flex">
-                            <span class="comment-username">{{comment.author.username}}</span>
-                            <span class="comment-date">{{comment.date|naturaltime}}</span>
-                        </div>
-                        <div class="comment_text">{{comment.text}}</div>
-                        <div id="likes-dislikes-flex">
-                            <div id="flex">
-                                <form method="POST" action="{% url 'comment_like' movie.slug comment.id %}">
-                                    {% csrf_token %}
-                                    <button name="like" class="com-like-btn">
-                                        <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
-                                            class="style-scope yt-icon"
-                                            style="pointer-events: none; display: block; width: 100%; height: 100%;">
-                                            <g class="style-scope yt-icon">
-                                                <path
-                                                    d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
-                                                    class="style-scope yt-icon">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                    </button>
-                                </form>
-                                <div class="com-like-counter">{{comment.commentlike_set.count}}</div>
-                            </div>
-                            <form method="POST" action="{% url 'comment_dislike' movie.slug comment.id %}">
+                        <div style="width: 92%;">
+                            <form method="POST" id="task-form" action="{% url 'comment' movie.slug %}">
                                 {% csrf_token %}
-                                <button class="com-dislike-btn" name="dislike">
-                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
-                                        class="style-scope yt-icon"
-                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
-                                        <g class="style-scope yt-icon">
-                                            <path
-                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
-                                                class="style-scope yt-icon">
-                                            </path>
-                                        </g>
-                                    </svg>
-                                </button>
+                                <input name="task" id="task" class="comment_input" type="text"
+                                    placeholder="Add a comment...">
                             </form>
                         </div>
-                    </div>
-                    <div style="align-items: flex-start ; margin-top: 0;">
-                        <form method="POST" action="{% url 'comment_delete' movie.slug comment.id %}">
-                            {% csrf_token %}
-                            <button class="delete-btn" name="commmentDelete"
-                                onclick="return confirm_delete()">Delete</button>
-                        </form>
                     </div>
                     {% else %}
-                    <div class="c-section-second">
-                        <div id="flex">
-                            <span class="comment-username">{{comment.author.username}}</span>
-                            <span class="comment-date">{{comment.date|naturaltime}}</span>
+                    <div class="user-input">
+                        <img class="comment_user_avatar" src="../../media/BlueHead.png" alt="">
+                        <a href="{% url 'signin' %}" style="width: 92%;">
+                            <input class="loggedout-comment_input" type="text" name="text"
+                                placeholder="Add a comment...">
+                        </a>
+                    </div>
+                    {% endif %}
+                    {% for comment in movie.comment_set.all %}
+                    <div class="review-column">
+                        <div class="c-section-first">
+                            {% if comment.author.id == user.id %}
+                            <a href="{% url 'profile' %}">
+                                {% if user.profile.picture.url != null %}
+                                <img class="comment_user_avatar" src="{{user.profile.picture.url}}" alt="">
+                                {% else %}
+                                <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                                    alt="{{comment.author.username}}">
+                                {% endif %}
+                            </a>
+                            {% else %}
+                            <a href="{% url 'user_detail_url' comment.author.profile %}">
+                                {% if comment.author.profile.picture.url != null %}
+                                <img class="comment_user_avatar" src="{{comment.author.profile.picture.url}}" alt="">
+                                {% else %}
+                                <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                                    alt="{{comment.author.username}}">
+                                {% endif %}
+                            </a>
+                            {% endif %}
+
                         </div>
-                        <div class="comment_text">{{comment.text}}</div>
-                        <div id="likes-dislikes-flex">
-                            <div id="flex">
-                                <form method="POST" action="{% url 'comment_like' movie.slug comment.id %}">
-                                    {% csrf_token %}
-                                    <button name="like" class="com-like-btn">
-                                        <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
-                                            class="style-scope yt-icon"
-                                            style="pointer-events: none; display: block; width: 100%; height: 100%;">
-                                            <g class="style-scope yt-icon">
-                                                <path
-                                                    d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
-                                                    class="style-scope yt-icon">
-                                                </path>
-                                            </g>
-                                        </svg>
-                                    </button>
-                                </form>
-                                <div class="com-like-counter">{{comment.commentlike_set.count}}</div>
+                        {% if comment.author == request.user %}
+                        <div class="c-section-second" style="width: 82%;">
+                            {% else %}
+                            <div class="c-section-second">
+                                {% endif %}
+                                <div id="flex">
+                                    <span class="comment-username">{{comment.author.username}}</span>
+                                    <span class="comment-date">{{comment.date|naturaltime}}</span>
+                                </div>
+                                <div class="comment_text">{{comment.text}}</div>
+                                <div id="likes-dislikes-flex">
+                                    <form method="POST" action="{% url 'comment_like' movie.slug comment.id %}">
+                                        {% csrf_token %}
+                                        <button class="com-like-btn">
+                                            {% if comment.commentlike_set.exists %}
+                                            <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet"
+                                                focusable="false" class="style-scope yt-icon"
+                                                style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                <g class="style-scope yt-icon">
+                                                    <path
+                                                        d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7l0,7ZM4,14H1V7H4Z"
+                                                        class="style-scope yt-icon"></path>
+                                                </g>
+                                            </svg>
+                                            {% else %}
+                                            <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet"
+                                                focusable="false" class="style-scope yt-icon"
+                                                style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                <g class="style-scope yt-icon">
+                                                    <path
+                                                        d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
+                                                        class="style-scope yt-icon">
+                                                    </path>
+                                                </g>
+                                            </svg>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                    <div class="com-like-counter">{{comment.commentlike_set.count}}</div>
+                                    <form method="POST" action="{% url 'comment_dislike' movie.slug comment.id %}">
+                                        {% csrf_token %}
+                                        <button class="com-dislike-btn" name="dislike">
+                                            {% if comment.commentdislike_set.exists %}
+                                            <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet"
+                                                focusable="false" class="style-scope yt-icon"
+                                                style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                <g class="style-scope yt-icon">
+                                                    <path
+                                                        d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7l0,7ZM4,14H1V7H4Z"
+                                                        class="style-scope yt-icon">
+                                                    </path>
+                                                </g>
+                                            </svg>
+                                            {% else %}
+                                            <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet"
+                                                focusable="false" class="style-scope yt-icon"
+                                                style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                                <g class="style-scope yt-icon">
+                                                    <path
+                                                        d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
+                                                        class="style-scope yt-icon">
+                                                    </path>
+                                                </g>
+                                            </svg>
+                                            {% endif %}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                            <form method="POST" action="{% url 'comment_dislike' movie.slug comment.id %}">
+                            {% if comment.author == request.user %}
+                            <div style="align-items: flex-start ; margin-top: 0;">
+                                <form method="POST" action="{% url 'comment_delete' movie.slug comment.id %}">
+                                    {% csrf_token %}
+                                    <button class="delete-btn" name="commmentDelete"
+                                        onclick="return confirm_delete()">Delete</button>
+                                </form>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="side-info">
+                <span class="about-text">About</span>
+                <div class="description">
+                    <div id="flex" style="justify-content: center;">
+                        <div class="imdb-ratings">
+                            <p>{{movie.imdb_rating}}/10</p>
+                            <p class="r-text">IMDb</p>
+                        </div>
+                        <div class="ratings">
+                            <p>{{movie.rotten_tomatoes_rating}}%</p>
+                            <p class="R-T">Rotten Tomatoes</p>
+                        </div>
+                        <div class="our-ratings">
+                            <p>{{movie.other_rating}}/10</p>
+                            <p class="r-text">Films</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="synopsis">{{movie.description|safe}}</div>
+                <div class="more">
+                    <div id="more-flex">
+                        <span class="more-text">Release Date:</span>
+                        <span class="sub-more-text">{{movie.date|date:"F d, Y"}}</span>
+                    </div>
+                    <div id="more-flex">
+                        {% if movie.director >= 2 %}
+                        <span class="more-text">Director:</span>
+                        {% else %}
+                        <span class="more-text">Directors:</span>
+                        {% endif %}
+                        <span class="sub-more-text">
+                            {% for director in movie.director.all %}
+                            <a class="link-col" href="{% url 'director_detail_url' director.slug %}">
+                                {{director.name}}{%if not forloop.last%},{%endif%}
+                            </a>
+                            {% endfor %}
+                        </span>
+                    </div>
+                    {% if movie.budget != null %}
+                    <div id="more-flex">
+                        <span class="more-text">Budget:</span>
+                        <span class="sub-more-text">{{movie.budget}}</span>
+                    </div>
+                    {% endif %}
+                    {% if movie.box_office != null %}
+                    <div id="more-flex">
+                        <span class="more-text">Box Office:</span>
+                        <span class="sub-more-text">{{movie.box_office}}</span>
+                    </div>
+                    {% endif %}
+                    <div id="more-flex">
+                        <span class="more-text">Music by:</span>
+                        <span class="sub-more-text">
+                            {% for composer in movie.composers.all %}
+                            <a class="link-col" href="{% url 'composer_detail_url' composer.slug %}">
+                                {{composer.name}}{%if not forloop.last%},{%endif%}
+                            </a>
+                            {% endfor %}
+                        </span>
+                    </div>
+                    <div id="more-flex">
+                        <span class="more-text">Runtime:</span>
+                        <span class="sub-more-text">{{movie.runtime}}</span>
+                    </div>
+                    <div id="more-flex">
+                        <span class="more-text">Country:</span>
+                        <span class="sub-more-text">{{movie.country.name}}</span>
+                    </div>
+                </div>
+                <div class="likes phone-none">
+                    <div>
+                        <span class="like-text">
+                            {{movie.like_set.count}} users liked this Movie
+                        </span>
+                        <p class="film-text">
+                            Films Website Users
+                        </p>
+                    </div>
+                    <div id="flex">
+                        <div id="flex">
+                            <form method="POST" action="{% url 'like' movie.slug %}">
                                 {% csrf_token %}
-                                <button class="com-dislike-btn" name="dislike">
-                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
-                                        class="style-scope yt-icon"
-                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
-                                        <g class="style-scope yt-icon">
-                                            <path
-                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
-                                                class="style-scope yt-icon">
-                                            </path>
-                                        </g>
+                                {% if movie.like_set.exists %}
+                                <button name="like" class="like-btn">
+                                    <svg style="fill: #188038;" class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
                                     </svg>
                                 </button>
+                                {% else %}
+                                <button name="like" class="like-btn">
+                                    <svg class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% endif %}
+                            </form>
+                        </div>
+                        {% csrf_token %}
+                        <div id="flex">
+                            <form method="POST" action="{% url 'dislike' movie.slug %}">
+                                {% csrf_token %}
+                                {% if movie.dislike_set.exists %}
+                                <button class="dislike-btn" name="dislike">
+                                    <svg style="fill: #c5221f;" class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% else %}
+                                <button class="dislike-btn" name="dislike">
+                                    <svg class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                                        <path
+                                            d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                                        </path>
+                                    </svg>
+                                </button>
+                                {% endif %}
                             </form>
                         </div>
                     </div>
-                    {% endif %}
                 </div>
-                {% endfor %}
             </div>
-            <div class="hr"></div>
         </div>
     </div>
+</div>
+
+<div class="mobile" style="padding: 0 20px;">
     <div class="side-info">
-        <span class="about-text">About</span>
+        <span class="cool-text">About</span>
         <div class="description">
             <div id="flex" style="justify-content: center;">
-                <div class="ratings">
+                <div class="imdb-ratings">
                     <p>{{movie.imdb_rating}}/10</p>
                     <p class="r-text">IMDb</p>
                 </div>
-                <div class="ratings" style="border: 1px #ecedef; border-style: none solid none solid;">
+                <div class="ratings">
                     <p>{{movie.rotten_tomatoes_rating}}%</p>
                     <p class="R-T">Rotten Tomatoes</p>
                 </div>
-                <div class="ratings">
+                <div class="our-ratings">
                     <p>{{movie.other_rating}}/10</p>
                     <p class="r-text">Films</p>
                 </div>
@@ -298,7 +472,8 @@
                 <span class="sub-more-text">{{movie.country.name}}</span>
             </div>
         </div>
-        <div class="likes">
+        <div class="hr"></div>
+        <div class="likes phone-none">
             <div>
                 <span class="like-text">
                     {{movie.like_set.count}} users liked this Movie
@@ -307,11 +482,11 @@
                     Films Website Users
                 </p>
             </div>
-            <div id="flex">
+            <div id="flex" style="justify-content: space-between;">
                 <div id="flex">
                     <form method="POST" action="{% url 'like' movie.slug %}">
                         {% csrf_token %}
-                        {% if movie.like_set.request.user.exists %}
+                        {% if movie.like_set.exists %}
                         <button name="like" class="like-btn">
                             <svg style="fill: #188038;" class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
                                 <path
@@ -334,7 +509,7 @@
                 <div id="flex">
                     <form method="POST" action="{% url 'dislike' movie.slug %}">
                         {% csrf_token %}
-                        {% if movie.dislike_set.request.user.exists %}
+                        {% if movie.dislike_set.exists %}
                         <button class="dislike-btn" name="dislike">
                             <svg style="fill: #c5221f;" class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
                                 <path
@@ -355,6 +530,434 @@
                 </div>
             </div>
         </div>
+        <span class="cool-text">Cast</span>
+        <div class="more-cast-column">
+            {% for actor in movie.cast.all %}
+            <a href="{% url 'actor_detail_url' actor.slug %}">
+                <div class="more-actor" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+                    <div class="more-actor-picture">
+                        <img src="{{actor.image.url}}" alt="{{actor.name}}">
+                    </div>
+                    <div class="more-actor-n_r">
+                        <div class="more-actor-name">{{actor.name}}</div>
+                        <div class="more-actor-role">{{role.role}}</div>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <div class="hr"></div>
+    </div>
+    <div class="side-info">
+        <div class="film-player">
+            <video controls>
+                <source src="{{movie.movie.url}}">
+            </video>
+        </div>
+        <div id="flex" style="justify-content: space-between;">
+            <div style="width: 80%;">
+                <span class="like-text">
+                    {{movie.like_set.count}} users liked this Movie
+                </span>
+                <p class="film-text">
+                    Films Website Users
+                </p>
+            </div>
+            <div id="flex" style="width: 35%; justify-content: end;">
+                <form method="POST" action="{% url 'like' movie.slug %}">
+                    {% csrf_token %}
+                    {% if movie.like_set.exists %}
+                    <button name="like" class="like-btn">
+                        <svg style="fill: #188038;" class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                            <path
+                                d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    {% else %}
+                    <button name="like" class="like-btn">
+                        <svg class="YIMUJb" aria-label="Like" viewBox="0 0 24 24">
+                            <path
+                                d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    {% endif %}
+                </form>
+                {% csrf_token %}
+                <form method="POST" action="{% url 'dislike' movie.slug %}">
+                    {% csrf_token %}
+                    {% if movie.dislike_set.exists %}
+                    <button class="dislike-btn" name="dislike">
+                        <svg style="fill: #c5221f;" class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                            <path
+                                d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    {% else %}
+                    <button class="dislike-btn" name="dislike">
+                        <svg class="YIMUJb" aria-label="Dislike" viewBox="0 0 24 24">
+                            <path
+                                d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z">
+                            </path>
+                        </svg>
+                    </button>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        <div class="hr"></div>
+        <div class="comments">
+            <span class="cool-text">{{movie.comment_set.count}} Comments</span>
+
+            {% if user.is_authenticated %}
+            <div class="user-input">
+                <a href="{% url 'profile' %}">
+                    {% if user.profile.picture.url != null %}
+                    <img class="cp" src="{{user.profile.picture.url}}" alt="">
+                    {% else %}
+                    <img class="cp" src="../../media/BlueHead.png" alt="">
+                    {% endif %}
+                </a>
+                <div style="width: 92%;">
+                    <form method="POST" action="{% url 'comment' movie.slug %}">
+                        {% csrf_token %}
+                        <input name="text" class="comment_input" type="text" placeholder="Add a comment...">
+                    </form>
+                </div>
+            </div>
+            {% else %}
+            <div class="user-input">
+                <img class="comment_user_avatar" src="../../media/BlueHead.png" alt="">
+                <a href="{% url 'signin' %}" style="width: 92%;">
+                    <input class="loggedout-comment_input" type="text" name="text" placeholder="Add a comment...">
+                </a>
+            </div>
+            {% endif %}
+            {% for comment in movie.comment_set.all %}
+            <div class="review-column">
+                <div class="c-section-first">
+                    {% if comment.author.id == user.id %}
+                    <a href="{% url 'profile' %}">
+                        {% if user.profile.picture.url != null %}
+                        <img class="comment_user_avatar" src="{{user.profile.picture.url}}" alt="">
+                        {% else %}
+                        <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                            alt="{{comment.author.username}}">
+                        {% endif %}
+                    </a>
+                    {% else %}
+                    <a href="{% url 'user_detail_url' comment.author.profile %}">
+                        {% if comment.author.profile.picture.url != null %}
+                        <img class="comment_user_avatar" src="{{comment.author.profile.picture.url}}" alt="">
+                        {% else %}
+                        <img class="comment_user_avatar" src="../../media/BlueHead.png"
+                            alt="{{comment.author.username}}">
+                        {% endif %}
+                    </a>
+                    {% endif %}
+
+                </div>
+                {% if comment.author == request.user %}
+                <div class="c-section-second" style="width: 82%;">
+                    {% else %}
+                    <div class="c-section-second">
+                        {% endif %}
+                        <div id="flex">
+                            <span class="comment-username">{{comment.author.username}}</span>
+                            <span class="comment-date">{{comment.date|naturaltime}}</span>
+                        </div>
+                        <div class="comment_text">{{comment.text}}</div>
+                        <div id="likes-dislikes-flex">
+                            <form method="POST" action="{% url 'comment_like' movie.slug comment.id %}">
+                                {% csrf_token %}
+                                <button class="com-like-btn">
+                                    {% if comment.commentlike_set.exists %}
+                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
+                                        class="style-scope yt-icon"
+                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <g class="style-scope yt-icon">
+                                            <path
+                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7l0,7ZM4,14H1V7H4Z"
+                                                class="style-scope yt-icon"></path>
+                                        </g>
+                                    </svg>
+                                    {% else %}
+                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
+                                        class="style-scope yt-icon"
+                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <g class="style-scope yt-icon">
+                                            <path
+                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
+                                                class="style-scope yt-icon">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                    {% endif %}
+                                </button>
+                            </form>
+                            <div class="com-like-counter">{{comment.commentlike_set.count}}</div>
+                            <form method="POST" action="{% url 'comment_dislike' movie.slug comment.id %}">
+                                {% csrf_token %}
+                                <button class="com-dislike-btn" name="dislike">
+                                    {% if comment.commentdislike_set.exists %}
+                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
+                                        class="style-scope yt-icon"
+                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <g class="style-scope yt-icon">
+                                            <path
+                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7l0,7ZM4,14H1V7H4Z"
+                                                class="style-scope yt-icon">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                    {% else %}
+                                    <svg viewBox="0 0 16 16" preserveAspectRatio="xMidYMid meet" focusable="false"
+                                        class="style-scope yt-icon"
+                                        style="pointer-events: none; display: block; width: 100%; height: 100%;">
+                                        <g class="style-scope yt-icon">
+                                            <path
+                                                d="M12.42,14A1.54,1.54,0,0,0,14,12.87l1-4.24C15.12,7.76,15,7,14,7H10l1.48-3.54A1.17,1.17,0,0,0,10.24,2a1.49,1.49,0,0,0-1.08.46L5,7H1v7ZM9.89,3.14A.48.48,0,0,1,10.24,3a.29.29,0,0,1,.23.09S9,6.61,9,6.61L8.46,8H14c0,.08-1,4.65-1,4.65a.58.58,0,0,1-.58.35H6V7.39ZM2,8H5v5H2Z"
+                                                class="style-scope yt-icon">
+                                            </path>
+                                        </g>
+                                    </svg>
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    {% if comment.author == request.user %}
+                    <div style="align-items: flex-start ; margin-top: 0;">
+                        <form method="POST" action="{% url 'comment_delete' movie.slug comment.id %}">
+                            {% csrf_token %}
+                            <button class="delete-btn" name="commmentDelete"
+                                onclick="return confirm_delete()">Delete</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).on('submit', '#task-form', function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'movie_detail_url' movie.slug %}",
+            data:
+            {
+                task: $("#task").val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function () {
+                alert('Saved');
+            }
+        })
+    });
+</script>
+
+<script>
+    $(function () {
+        $('#like').on('click', function () {
+            var url = $(this).attr('data-url')
+            var token = $('[name=csrfmiddlewaretoken]').val()
+
+            $.ajax({
+                url: url,
+
+                type: "POST",
+
+                headers: {
+                    'X_CSRF-Token': token
+                },
+
+                success: function (data) {
+                    console.log('NOICE = NICE')
+                    $('#like').css('color', 'green')
+                    $('#likes').load(location.href + ' .com-like-counter')
+                    $('#dislikes').load(location.href + ' #dislikes_count')
+                },
+                error: function (msg) {
+                    alert('WTF DUDE')
+                    console.log(msg)
+                }
+            })
+        })
+    })
+
+    $(function () {
+        $('#dislike').on('click', function () {
+            var url = $(this).attr('data-url')
+            var token = $('[name=csrfmiddlewaretoken]').val()
+
+            $.ajax({
+                url: url,
+
+                type: "POST",
+
+                headers: {
+                    'X_CSRF-Token': token
+                },
+
+                success: function (data) {
+                    console.log('NOICE = NICE')
+                    $('#dilike').css('color', 'red')
+                    $('#dislikes').load(location.href + ' #dislikes_count')
+                    $('#likes').load(location.href + ' #likes_count')
+                },
+                error: function (msg) {
+                    alert('WTF DUDE')
+                    console.log(msg)
+                }
+            })
+        })
+    })
+</script>
+
+{% endblock %}
+
+{% block footer %}
+
+<div class="phone-none">
+    <div class="" id="footer">
+        <div class="footer-row">
+            <div class="pa20" style="padding-top: 5px;">
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+
+                <div id="flex" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <span class="copyright-text">
+                            Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                        </span>
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                            Uzbekistan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer-phone-none">
+    <div class="" id="footer">
+        <div class="pa20" style="padding-top: 5px;">
+            <div class="footer-row">
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+
+                <div id="flex" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <span class="copyright-text">
+                            Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                        </span>
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                            Uzbekistan
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mobile-footer">
+    <div id="footer">
+        <div class="pa20" style="padding-top: 5px;">
+            <div class="footer-row">
+                <div class="more-footer-text">
+                    <span class="more-foot-text">
+                        Please
+                        <a class="underline" style="color: #06c;" href="https://mail.google.com/mail/u/0/">Contact
+                            us</a>, to
+                        help for
+                        improving
+                        our websites.
+                    </span>
+                </div>
+
+                <div class="apple-hr" style="margin: 8px 0;"></div>
+                <p class="copyright-text">
+                    Copyright © 2022 Films. All rights reserved. But i'm not sure.
+                </p>
+                <div id="flex" class="mt20" style="justify-content: space-between;">
+                    <div class="copyright">
+                        <div class="copyright-flex">
+                            <div class="cop-item" style="border: none; padding-left: 0;">
+                                <a href="">Privacy Policy</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="">Terms of Use</a>
+                            </div>
+                            <div class="cop-item">
+                                <a href="https://www.instagram.com/r.abdu44/">Developer</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="footer-country">
+                        <div>
+                            <a href="https://en.wikipedia.org/wiki/Uzbekistan">
+                                Uzbekistan
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}

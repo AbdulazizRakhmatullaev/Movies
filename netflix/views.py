@@ -1,4 +1,5 @@
 from cgitb import text
+from curses.ascii import HT
 import email
 from email.policy import default
 from random import random
@@ -45,9 +46,12 @@ def profile(request):
 def profile_comment_delete(request, slug, pk):
     movie = Movie.objects.get(slug__exact=slug)
     comment = movie.comment_set.get(pk=pk)
-    if request.method == 'POST':
-        comment.delete()
-        return redirect('comments')
+    if comment.author == request.user:
+        if request.method == 'POST':
+            comment.delete()
+            return redirect('comments')
+    else:
+        return redirect('index')
     return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
@@ -74,6 +78,12 @@ def movie_detail(request, slug):
             view = request.user.view_set.get(movie=movie)
             view.date = timezone.now()
             view.save()
+
+    if request.method == 'POST':
+        comment = request.POST.get('comment')
+        print(comment)
+        new = Comment(comment=comment)
+        new.save()
     genres = Genre.objects.order_by('title')
     context = {
         "movie": movie,
@@ -181,7 +191,8 @@ def comment_like(request, slug, pk):
                         comment=comment)
                     comment_dislike.delete()
             else:
-                comment_like = request.user.commentlike_set.get(comment=comment)
+                comment_like = request.user.commentlike_set.get(
+                    comment=comment)
                 comment_like.delete()
         else:
             return redirect('signin')
@@ -196,10 +207,12 @@ def comment_dislike(request, slug, pk):
             if not comment.commentdislike_set.filter(user=request.user).exists():
                 comment.commentdislike_set.create(user=request.user)
                 if comment.commentlike_set.filter(user=request.user).exists():
-                    comment_like = request.user.commentlike_set.get(comment=comment)
+                    comment_like = request.user.commentlike_set.get(
+                        comment=comment)
                     comment_like.delete()
             else:
-                comment_dislike = request.user.commentdislike_set.get(comment=comment)
+                comment_dislike = request.user.commentdislike_set.get(
+                    comment=comment)
                 comment_dislike.delete()
         else:
             return redirect('signin')
@@ -209,9 +222,11 @@ def comment_dislike(request, slug, pk):
 def comment_delete(request, slug, pk):
     movie = Movie.objects.get(slug__exact=slug)
     comment = movie.comment_set.get(pk=pk)
-    if comment.author == request.user:
+    if request.user == request.user:
         if request.method == 'POST':
             comment.delete()
+    else:
+        return redirect('index')
     return redirect(reverse('movie_detail_url', kwargs={'slug': slug}))
 
 
@@ -457,16 +472,13 @@ def user_comments(request, username):
 
 def profile_edit(request):
     if request.user.is_authenticated:
-        message = None
         if request.method == 'POST':
             form = ProfileForm(request.POST, request.FILES)
             if form.is_valid():
                 form.save(request.user)
-                message = 'Changes saved !'
-                return render(request, "netflix/profile.html", {"message": message})
+                return render(request, "netflix/profile.html")
         form = ProfileForm(
             initial={
-                'picture': request.user.profile.picture,
                 'email': request.user.email,
                 'username': request.user.username,
                 'first_name': request.user.first_name,

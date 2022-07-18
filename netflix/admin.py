@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Choice_total, Poll, Profile, Genre, Director, Actor, Composer, Movie, IMDb_Rating, Other_Rating, Role, Rotten_Tomatoes_Rating, Comment, UserVisit
+from .models import Poll, Profile, Genre, Director, Actor, Composer, Movie, IMDb_Rating, Other_Rating, Role, Rotten_Tomatoes_Rating, Comment, UserVisit
 
 
 class UserVisitAdmin(admin.ModelAdmin):
@@ -52,5 +52,4 @@ admin.site.register(Rotten_Tomatoes_Rating)
 admin.site.register(IMDb_Rating)
 admin.site.register(Comment)
 admin.site.register(Poll)
-admin.site.register(Choice_total)
 admin.site.register(Role)

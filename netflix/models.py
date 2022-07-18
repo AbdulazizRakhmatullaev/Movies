@@ -2,6 +2,7 @@ from __future__ import annotations
 from distutils.command.upload import upload
 from email.policy import default
 from os import link
+from pyexpat import model
 from tabnanny import verbose
 from tkinter import CASCADE
 from turtle import title
@@ -299,14 +300,6 @@ class SecondChoice(models.Model):
     composer = models.ForeignKey(Composer, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     question = models.ForeignKey(Poll, on_delete=models.CASCADE, null=True)
-
-
-class Choice_total(models.Model):
-    firstchoice = models.ForeignKey(FirstChoice, on_delete=models.CASCADE)
-    secondchoice = models.ForeignKey(SecondChoice, on_delete=models.CASCADE)
-
-    def total(self):
-        return str(self.firstchoice) + str(self.secondchoice)
 
 
 class View(models.Model):

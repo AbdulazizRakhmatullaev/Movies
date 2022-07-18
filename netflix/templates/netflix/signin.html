@@ -13,35 +13,36 @@
 </head>
 
 <body>
-    <a href="{% url 'index' %}" class="back">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left"
-            viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
-        </svg>
-        <h4>Back</h4>
-    </a>
+    <div class="phone-none">
+        <a href="{% url 'index' %}" class="back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" class="bi bi-chevron-left"
+                viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+            </svg>
+            <h4>Back</h4>
+        </a>
+    </div>
     {% if message != null %}
     <div class="notification">
         <p>{{message}}</p>
     </div>
     {% endif %}
+    <div class="log-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" style="height: 180px;" fill="currentColor" class="bi bi-person"
+            viewBox="0 0 16 16">
+            <path
+                d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+        </svg>
+    </div>
+    <div class="log-info">
+        <h1>Sign in to your Account</h1>
+        <p>Please enter your username and confirm your password.</p>
+    </div>
     <div class="container">
-        <form action="{% url 'signin' %}" method="POST">
-            <div class="log-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" style="height: 180px;" fill="currentColor"
-                    class="bi bi-person-circle" viewBox="0 0 16 16">
-                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                    <path fill-rule="evenodd"
-                        d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                </svg>
-            </div>
-            <div class="log-info">
-                <h1>Sign in to your Account</h1>
-                <p>Please enter your username and confirm your password.</p>
-            </div>
+        <form action="{% url 'signin' %}" method="POST" class="mob-w100">
             {% csrf_token %}
-            <div class="field" style="margin-top: 30px;">
+            <div class="field">
                 <input class="login" type="text" name="username" required autocomplete="off" id="username" value="">
                 <label class="l-hover" for="username" title="Username" data-title="Username"></label>
             </div>

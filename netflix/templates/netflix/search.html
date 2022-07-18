@@ -28,17 +28,39 @@
         <div class="sub-genre-loading"></div>
         <div class="sub-genre-loading"></div>
         <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
-        <div class="sub-genre-loading"></div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
+        <div class="phone-none">
+            <div class="sub-genre-loading"></div>
+        </div>
         {% endfor %}
     </div>
     <div class="right-smooth-fade"></div>
@@ -48,19 +70,38 @@
     <h1 class="g-name">Movies</h1>
 </div>
 
-<div id="movie">
-    {% for movie in movies %}
-    <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
-        <a href="{% url 'movie_detail_url' movie.slug %}">
-            <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
-        </a>
-        <div class="mov-info">
-            <h1>{{movie.title|safe|slice:'0:63'}}</h1>
+<div class="phone-none">
+    <div id="movie">
+        {% for movie in movies %}
+        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
+            <a href="{% url 'movie_detail_url' movie.slug %}">
+                <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+            </a>
+            <div class="mov-info">
+                <h1>{{movie.title|safe|slice:'0:63'}}</h1>
+            </div>
         </div>
+        {% empty %}
+        <span class="g-name">named "<b>{{query}}</b>" not found</span>
+        {% endfor %}
     </div>
-    {% empty %}
-    <span class="g-name">named "<b>{{query}}</b>" not found</span>
-    {% endfor %}
+</div>
+
+<div class="mobile">
+    <div id="movie">
+        {% for movie in movies %}
+        <div class="mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+            <a href="{% url 'movie_detail_url' movie.slug %}">
+                <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
+            </a>
+            <div class="mov-info">
+                <h1>{{movie.title|safe|slice:'0:63'}}</h1>
+            </div>
+        </div>
+        {% empty %}
+        <span class="g-name">named "<b>{{query}}</b>" not found</span>
+        {% endfor %}
+    </div>
 </div>
 
 {% endblock %}
