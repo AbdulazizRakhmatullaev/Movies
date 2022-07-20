@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from pytz import timezone
 from requests import request
-from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role, UserVisit, View
+from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role, View
 from django.db.models import Q, Max, Count
 from django.contrib.auth.hashers import make_password
 from django.views.decorators.csrf import csrf_exempt
