@@ -11,6 +11,7 @@ from django.forms import SlugField
 from django.utils import timezone
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
+from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from requests import request
 from django.conf import settings
