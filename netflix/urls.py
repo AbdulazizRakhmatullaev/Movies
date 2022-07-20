@@ -53,4 +53,7 @@ urlpatterns = [
     path('directors/<slug:slug>/DirectorSecondChoice',
          views.DirectorSecondChoice, name='DirectorSecondChoice'),
     #     --------
+    path('privacy-policy', views.privacy_policy, name='privacy_policy'),
+    path('terms-of-use', views.terms_of_use, name='terms_of_use')
+
 ]

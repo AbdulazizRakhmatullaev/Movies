@@ -11,7 +11,6 @@ from django.forms import SlugField
 from django.utils import timezone
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
-from django_countries.fields import CountryField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from requests import request
 from django.conf import settings
@@ -186,7 +185,6 @@ class Movie(models.Model):
     composers = models.ManyToManyField(
         Composer, blank=True, verbose_name="Composers")
     date = models.DateField('Release Date', default=timezone.now)
-    country = CountryField(blank_label='Select Country')
     Quality = models.CharField("Quality", max_length=255, default="720p")
     runtime = models.CharField("Runtime", max_length=255, default="1h 20m")
     publication = models.BooleanField("Publication", default=True)

@@ -39,8 +39,7 @@ def profile(request):
     if not request.user.is_authenticated:
         return redirect('index')
     form = ProfileForm()
-    uservisits = UserVisit.objects.all()
-    return render(request, "netflix/profile.html", {'form': form, 'uservisits': uservisits})
+    return render(request, "netflix/profile.html", {'form': form})
 
 
 def profile_comment_delete(request, slug, pk):
@@ -487,3 +486,10 @@ def profile_edit(request):
         )
         return render(request, 'netflix/profile_edit.html', {'form': form})
     return redirect('index')
+
+
+def privacy_policy(request):
+    return render(request, 'netflix/privacy-policy.html')
+
+def terms_of_use(request):
+    return render(request, 'netflix/terms-of-use.html')
