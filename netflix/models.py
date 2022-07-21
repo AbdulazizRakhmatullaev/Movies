@@ -1,18 +1,9 @@
-from distutils.command.upload import upload
-from email.policy import default
-from os import link
-from pyexpat import model
-from tabnanny import verbose
-from tkinter import CASCADE
-from turtle import title
-from unicodedata import decimal
 from django.db import models
 from django.forms import SlugField
 from django.utils import timezone
 from django.shortcuts import reverse
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
-from requests import request
 from django.conf import settings
 import datetime
 from django.conf import settings
