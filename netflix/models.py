@@ -176,7 +176,6 @@ class Movie(models.Model):
     composers = models.ManyToManyField(
         Composer, blank=True, verbose_name="Composers")
     date = models.DateField('Release Date', default=timezone.now)
-    Quality = models.CharField("Quality", max_length=255, default="720p")
     runtime = models.CharField("Runtime", max_length=255, default="1h 20m")
     publication = models.BooleanField("Publication", default=True)
     slug = models.SlugField('Link', unique=True)

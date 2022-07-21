@@ -5,7 +5,6 @@ import django.core.validators
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-import django_countries.fields
 
 
 class Migration(migrations.Migration):
@@ -126,7 +125,6 @@ class Migration(migrations.Migration):
                 ('budget', models.CharField(default='20 million', max_length=255, verbose_name='Budget')),
                 ('box_office', models.CharField(default='1.50 billion', max_length=255, verbose_name='Box Office')),
                 ('date', models.DateField(default=django.utils.timezone.now, verbose_name='Release Date')),
-                ('country', django_countries.fields.CountryField(max_length=2)),
                 ('Quality', models.CharField(default='720p', max_length=255, verbose_name='Quality')),
                 ('runtime', models.CharField(default='1h 20m', max_length=255, verbose_name='Runtime')),
                 ('publication', models.BooleanField(default=True, verbose_name='Publication')),
