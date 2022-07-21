@@ -1,18 +1,7 @@
-from cgitb import text
-from curses.ascii import HT
-import email
-from email.policy import default
-from random import random
-from signal import setitimer
-from socket import timeout
-from unicodedata import category, name
-from xml.etree.ElementTree import Comment
 from django import views
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from pytz import timezone
-from requests import request
 from .models import Actor, Composer, Director, Poll, Like, Profile, Genre, Comment, Movie, Role, View
 from django.db.models import Q, Max, Count
 from django.contrib.auth.hashers import make_password
