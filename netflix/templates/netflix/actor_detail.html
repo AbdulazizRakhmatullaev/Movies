@@ -214,7 +214,7 @@
                 <div style="margin-top: 10px;"></div>
                 <span class="cool-text">More actors</span>
                 <div class="more-cast-column">
-                    {% for director in cast %}
+                    {% for actor in cast %}
                     <a href="{% url 'actor_detail_url' actor.slug %}">
                         <div class="more-actor" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
                             <div class="more-actor-picture">
