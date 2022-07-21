@@ -1,4 +1,3 @@
-from django import views
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
@@ -13,9 +12,9 @@ from .forms import ProfileForm
 
 
 def index(request):
-    movies = Movie.objects.all().order_by('-date')
-    populars = Movie.objects.order_by('-title')
+    populars = Movie.objects.order_by('title')
     genres = Genre.objects.order_by('title')
+    movies = Movie.objects.order_by('-date')
     context = {
         'genres': genres,
         'movies': movies,
@@ -479,6 +478,7 @@ def profile_edit(request):
 
 def privacy_policy(request):
     return render(request, 'netflix/privacy-policy.html')
+
 
 def terms_of_use(request):
     return render(request, 'netflix/terms-of-use.html')

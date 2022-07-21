@@ -131,9 +131,15 @@ Home
 <div class="phone-none">
     {% for genre in genres %}
 
+    {% if genre.movie_set.count == 0 %}
+
+
+    {% else %}
+
     <div class="genre">
         <h1 class="g-name">{{genre.title}}</h1>
     </div>
+
     <div id="movie">
         {% for movie in genre.movie_set.all %}
 
@@ -147,6 +153,8 @@ Home
         </div>
         {% endfor %}
     </div>
+    {% endif %}
+
     {% endfor %}
 </div>
 
@@ -154,13 +162,19 @@ Home
     <div class="index-mobile-center">
         {% for genre in genres %}
 
+        {% if genre.movie_set.count == 0 %}
+
+
+        {% else %}
+
         <div class="genre">
             <h1 class="g-name">{{genre.title}}</h1>
         </div>
+
         <div id="movie">
             {% for movie in genre.movie_set.all %}
 
-            <div class="mov-detail" style="{% if not forloop.first %} margin-left: 6px; {% endif %}">
+            <div class="mov-detail" style="{% if not forloop.first %} margin-left: 12px; {% endif %}">
                 <a href="{% url 'movie_detail_url' movie.slug %}">
                     <img class="poster" src="{{movie.poster.url}}" alt="POSTER">
                 </a>
@@ -170,6 +184,8 @@ Home
             </div>
             {% endfor %}
         </div>
+        {% endif %}
+
         {% endfor %}
     </div>
 </div>
